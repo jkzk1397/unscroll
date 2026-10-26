@@ -210,8 +210,8 @@ select.time { appearance: auto; }
 .shorts-hint { position: absolute; bottom: 28px; left: 0; right: 0; text-align: center; font-size: 12px; opacity: .55; z-index: 3; }
 .nudge-bg { position: absolute; inset: 0; z-index: 5; background: rgba(10, 14, 30, .5); -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); animation: fade .3s both; }
 .nudge { position: absolute; left: 12px; right: 12px; top: 54px; z-index: 6; background: #fff; color: var(--ink); border-radius: 26px; padding: 22px 20px 20px; animation: drop .5s cubic-bezier(.2, 1.25, .4, 1) both; box-shadow: 0 20px 50px rgba(0,0,0,.35); }
-.nudge .who { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--ink-3); font-weight: 600; }
-.nudge .who i { width: 22px; height: 22px; border-radius: 7px; background: var(--navy); display: grid; place-items: center; }
+.nudge .who, .alarm-card .who { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--ink-3); font-weight: 600; }
+.nudge .who i, .alarm-card .who i { width: 22px; height: 22px; border-radius: 7px; background: var(--navy); display: grid; place-items: center; }
 @keyframes drop { from { transform: translateY(-130%); } to { transform: none; } }
 @keyframes fade { from { opacity: 0; } to { opacity: 1; } }
 @media (max-width: 760px) { .shorts-top { padding-top: max(14px, env(safe-area-inset-top)); } .nudge { top: max(16px, env(safe-area-inset-top)); } }
@@ -268,7 +268,8 @@ details.ev { margin-top: 10px; }
 details.ev summary { cursor: pointer; font-size: 13px; color: var(--ink-3); font-weight: 600; }
 .ratio-card { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 .ratio-card b { font-size: 26px; font-weight: 850; }
-.cover { position: absolute; inset: 0; z-index: 8; background: var(--navy); color: #fff; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 30px 24px; }
+.cover { position: absolute; inset: 0; z-index: 8; background: #10163A; display: flex; align-items: center; justify-content: center; padding: 20px 14px; }
+.alarm-card { width: 100%; background: #fff; color: var(--ink); border-radius: 26px; padding: 20px; max-height: 100%; overflow-y: auto; animation: pop .45s cubic-bezier(.2, 1.3, .4, 1) both; }
 .cover-time { font-size: 56px; font-weight: 850; letter-spacing: -0.02em; line-height: 1; margin-top: 14px; }
 .cover-line { font-size: 18px; font-weight: 700; margin-top: 10px; opacity: .92; }
 .cover-plan { margin-top: 16px; background: rgba(255,255,255,.12); border-radius: 14px; padding: 10px 14px; font-weight: 650; max-width: 300px; line-height: 1.45; }
@@ -579,10 +580,10 @@ function render() {
 function onboard() {
   const dotsBar = `<div class="steps">${[1, 2, 3, 4].map(i => `<i class="${S.step >= i ? 'on' : ''}"></i>`).join('')}</div>`;
   if (S.step === 0) return `<div style="display:flex;flex-direction:column;height:100%;justify-content:space-between;padding-top:70px">
-      <div><div class="pop">${mascot('calm', 120)}</div>
-      <p class="h1" style="font-size:36px;margin-top:18px">언스크롤</p>
-      <p class="h2" style="margin-top:12px;font-weight:650">멈추리와 함께,<br>숏폼에 빠졌던 순간을 하루 1분 돌아봐요.</p>
-      <p class="sub" style="margin-top:10px">막거나 혼내지 않아요.</p></div>
+      <div><div style="width:64px;height:64px;border-radius:20px;background:var(--navy);display:grid;place-items:center;margin-bottom:28px">${ICON.logo}</div>
+      <p class="h1" style="font-size:36px">언스크롤</p>
+      <p class="h2" style="margin-top:14px;font-weight:650">릴스, 쇼츠에 빠졌던 순간을<br>하루 1분만 돌아봐요.</p>
+      <p class="sub" style="margin-top:12px">앱을 막거나 혼내지 않아요.<br>언제, 왜 스크롤이 길어졌는지 같이 찾아봐요.</p></div>
       <div>${isStandalone() || window.innerWidth > 760 ? '' : '<p class="small" style="text-align:center;margin-bottom:10px">브라우저 메뉴에서 "홈 화면에 추가"를 누르면 앱처럼 열려요</p>'}<button class="btn primary" data-go="1">시작하기</button></div></div>`;
   if (S.step === 1) return `${dotsBar}<p class="h1">뭐라고 부를까요?</p>
       <input class="reason" id="name" style="margin-top:20px;font-size:18px;padding:14px" maxlength="10" placeholder="이름이나 별명" value="${esc(S.name)}" autofocus>
@@ -661,17 +662,26 @@ function compareChips() {
 }
 function home() {
   const t = today(), st = streak(), stops = stopsThisWeek();
-  const say = S.todayDone ? '오늘도 돌아봤어요. 내일 또 봐요!'
-    : (weekPeekText() || `오늘 숏폼 ${hm(t['숏폼분'])}. 1분만 같이 돌아볼까요?`);
-  return `<div class="hero">${mascot(moodNow(), 84)}<div class="say">${esc(say)}</div></div>
-    <div class="chips-row"><span class="mini">${ICON.flame.replace('width="28" height="28"', 'width="16" height="16"')}${st}일 연속</span><span class="mini">스스로 멈춤 ${stops}번</span>${S.plan ? `<span class="mini">계획 ${S.planDays.length}일 지킴</span>` : ''}</div>
-    <div class="block"><p class="small">오늘 숏폼</p><p class="big-num num">${hm(t['숏폼분'])}</p>${compareChips()}${shortChart()}</div>
-    ${S.todayDone ? '' : `<button class="btn primary" style="margin-top:14px" data-tab="review">오늘 돌아보기 (1분)</button>`}
+  const ds = days(), dots = ds.map((d, i) => { const done = i < ds.length - 1 ? d['세션'].every(x => x['평가']) : S.todayDone;
+    return `<div class="dot ${done ? 'done' : ''} ${i === ds.length - 1 ? 'today' : ''}"><i></i>${d['요일']}</div>`; }).join('');
+  const peek = weekPeekText();
+  return `<p class="small" style="margin-top:6px">${esc(t['날짜'].slice(5).replace('-', '월 '))}일 ${t['요일']}요일</p>
+    <p class="h1">${esc(S.name)}님, 오늘도 돌아볼까요?</p>
+    <div class="block"><div class="row between"><div class="streak"><div class="flame">${ICON.flame}</div><div><span class="streak-n num">${st}일</span><p class="small">연속으로 돌아봤어요</p></div></div>
+      <div style="text-align:right"><b class="num" style="font-size:20px">${stops}번</b><p class="small">스스로 멈춤</p></div></div><div class="dots">${dots}</div></div>
+    <div class="block"><div class="row between" style="align-items:flex-end"><div><p class="small">오늘 숏폼</p><p class="big-num num">${hm(t['숏폼분'])}</p></div><p class="small" style="text-align:right">폰 전체 ${hm(t['총분'])}</p></div>
+      ${compareChips()}${shortChart()}
+      <div class="legend" style="justify-content:flex-start"><span style="--c:var(--navy)">숏폼 시청 시간</span><span style="--c:var(--coral)">그중 아쉬웠던 시간</span></div>
+      ${peek ? `<p class="small peek">${esc(peek)}</p>` : ''}</div>
+    ${S.todayDone ? `<div class="block row"><span style="font-size:22px">✓</span><div><b>오늘 돌아보기 끝</b><p class="small">내일 ${S.notif.reviewT}에 다시 알려 드릴게요</p></div></div>`
+      : `<button class="btn primary" style="margin-top:14px" data-tab="review">오늘 돌아보기 (1분)</button>`}
     ${S.plan ? `<div class="block"><p class="small">내 계획</p><p class="h2" style="margin-top:4px">${esc(S.plan)}</p>
-      <div class="pair" style="margin-top:12px"><button class="btn ghost sm" style="width:100%" id="keep">오늘 지켰어요</button><button class="btn line sm" style="width:100%" id="miss">못 했어요</button></div></div>` : ''}
-    <button class="block week-card" id="openReflect"><div class="wk-ring">${ringSVG(150, days().length - 1)}</div>
-      <div style="text-align:left"><b>이번 주 돌아보기</b><p class="small" style="margin-top:4px">멈추리와 AI가 언제, 왜 길어졌는지 같이 찾아봐요</p><span class="go">열기</span></div></button>
-    ${S.notif.short ? `<button class="link-btn" data-demo-shorts>시연: 쇼츠 보다가 ${S.notif.shortLimit}분 넘기기</button>` : ''}`;
+      <p class="small" style="margin-top:6px">이번 주 ${S.planDays.length}일 지켰어요</p>
+      <div class="pair" style="margin-top:12px"><button class="btn ghost sm" style="width:100%" id="keep">오늘 지켰어요</button><button class="btn line sm" style="width:100%" id="miss">오늘은 못 했어요</button></div></div>` : ''}
+    <div class="block"><b>하루 시계</b><p class="small">바깥 고리는 고른 날, 안쪽 산은 일주일 동안 숏폼을 본 시간대예요.</p>
+      ${ringBlock(250)}
+      <button class="btn ghost" style="margin-top:14px" id="openReflect">이번 주 돌아보기 (AI)</button></div>
+    ${S.notif.short ? `<button class="btn line" style="margin-top:14px" data-demo-shorts>시연: 쇼츠 보다가 ${S.notif.shortLimit}분 넘기기</button>` : ''}`;
 }
 function weekPeekText() {
   const reg = weekSessions().filter(s => s['평가'] === '후회' && SHORT.includes(s['앱']));
@@ -864,7 +874,7 @@ async function reflectWeek(sessions) {
   return { ...local, AI: '모의 AI', '대신': AI.lastError ? '연결' : '형식' };
 }
 async function openReflect() {
-  overlay('이번 주 돌아보기', thinking('멈추리가 이번 주 기록을 읽는 중'));
+  overlay('이번 주 돌아보기', thinking('AI가 이번 주 기록을 읽는 중'));
   const sessions = weekSessions().filter(s => s['평가']);
   let R;
   try {
@@ -1013,7 +1023,7 @@ async function makeNudges(trig, plan) {
 }
 function planDone() {
   const T = TYPES[S.trigger];
-  overlay('다음 주 계획', `<div class="hero" style="margin-top:4px">${mascot('happy', 84)}<div class="say">계획 좋아요! 숏폼이 길어지면 화면 위에서 알려 줄게요.</div></div>
+  overlay('다음 주 계획', `<p class="h1">계획을 정했어요</p><p class="sub" style="margin-top:6px">매일 ${S.notif.planT}에 알려 드리고, 숏폼을 ${S.notif.shortLimit}분 넘게 보면 이 계획이 알림에 떠요.</p>
     <div class="type-card"><p class="label">이번 주 나는</p><p class="type-name">${esc(T.name)}</p><p style="opacity:.85">${esc(S.plan)}</p></div>
     <button class="btn ghost" style="margin-top:14px" id="preview">알림 미리 보기</button>
     <button class="btn primary" style="margin-top:10px" id="toShare">친구에게 카드 보내기</button>
@@ -1083,33 +1093,8 @@ async function openShare() {
   };
 }
 
-/* ---------- 마스코트 '멈추리' (멈추다 + 오리). 표정: calm, happy, sleepy, think, stop ---------- */
-function mascot(mood = 'calm', size = 96, dark = false) {
-  const ink = dark ? '#151C45' : '#1A2233', W = '#FFFFFF', Y = '#FFC93C', P = '#FFB0A3';
-  const eyes = {
-    calm: `<circle cx="46" cy="58" r="4.4" fill="${ink}"/><circle cx="74" cy="58" r="4.4" fill="${ink}"/><circle cx="47.4" cy="56.6" r="1.3" fill="#fff"/><circle cx="75.4" cy="56.6" r="1.3" fill="#fff"/>`,
-    happy: `<path d="M40 60 Q46 52 52 60" stroke="${ink}" stroke-width="3.4" fill="none" stroke-linecap="round"/><path d="M68 60 Q74 52 80 60" stroke="${ink}" stroke-width="3.4" fill="none" stroke-linecap="round"/>`,
-    sleepy: `<path d="M40 59 Q46 63 52 59" stroke="${ink}" stroke-width="3.2" fill="none" stroke-linecap="round"/><path d="M68 59 Q74 63 80 59" stroke="${ink}" stroke-width="3.2" fill="none" stroke-linecap="round"/><text x="92" y="30" font-size="15" font-weight="800" fill="${dark ? '#fff' : ink}" opacity=".7">z</text><text x="102" y="18" font-size="11" font-weight="800" fill="${dark ? '#fff' : ink}" opacity=".5">z</text>`,
-    think: `<circle cx="47" cy="55" r="4.4" fill="${ink}"/><circle cx="75" cy="55" r="4.4" fill="${ink}"/><path d="M68 46 L80 44" stroke="${ink}" stroke-width="2.6" stroke-linecap="round"/><path d="M98 26 l4 -6 M104 34 l7 -2 M93 22 l0 -7" stroke="${Y}" stroke-width="3" stroke-linecap="round"/>`,
-    stop: `<circle cx="46" cy="58" r="5" fill="${ink}"/><circle cx="74" cy="58" r="5" fill="${ink}"/><circle cx="47.6" cy="56.4" r="1.5" fill="#fff"/><circle cx="75.6" cy="56.4" r="1.5" fill="#fff"/>`,
-  }[mood] || '';
-  const wings = mood === 'stop' || mood === 'happy'
-    ? `<ellipse cx="17" cy="56" rx="9" ry="15" transform="rotate(25 17 56)" fill="${W}" stroke="${ink}" stroke-width="3"/><ellipse cx="103" cy="56" rx="9" ry="15" transform="rotate(-25 103 56)" fill="${W}" stroke="${ink}" stroke-width="3"/>`
-    : `<path d="M23 74 C13 78 14 90 25 90" fill="${W}" stroke="${ink}" stroke-width="3" stroke-linecap="round"/><path d="M97 74 C107 78 106 90 95 90" fill="${W}" stroke="${ink}" stroke-width="3" stroke-linecap="round"/>`;
-  const beak = mood === 'happy' || mood === 'stop'
-    ? `<path d="M48 68 Q60 62 72 68 Q66 80 60 80 Q54 80 48 68 Z" fill="${Y}" stroke="${ink}" stroke-width="2.6" stroke-linejoin="round"/><path d="M50 69 Q60 73 70 69" stroke="${ink}" stroke-width="2" fill="none"/>`
-    : `<ellipse cx="60" cy="70" rx="11.5" ry="6.5" fill="${Y}" stroke="${ink}" stroke-width="2.6"/><path d="M50 70 L70 70" stroke="${ink}" stroke-width="1.6" opacity=".55"/>`;
-  return `<svg class="mascot m-${mood}" width="${size}" height="${size}" viewBox="0 0 120 120" role="img" aria-label="멈추리">
-    <ellipse cx="48" cy="109" rx="9" ry="4" fill="${Y}" stroke="${ink}" stroke-width="2.4"/><ellipse cx="72" cy="109" rx="9" ry="4" fill="${Y}" stroke="${ink}" stroke-width="2.4"/>
-    ${mood === 'stop' || mood === 'happy' ? '' : wings}
-    <path d="M60 20 C88 20 99 45 99 70 C99 95 82 106 60 106 C38 106 21 95 21 70 C21 45 32 20 60 20 Z" fill="${W}" stroke="${ink}" stroke-width="3"/>
-    <path d="M57 21 C55 12 63 9 66 14" fill="none" stroke="${ink}" stroke-width="3" stroke-linecap="round"/>
-    ${mood === 'stop' || mood === 'happy' ? wings : ''}
-    <ellipse cx="36" cy="71" rx="6.5" ry="3.8" fill="${P}" opacity=".85"/><ellipse cx="84" cy="71" rx="6.5" ry="3.8" fill="${P}" opacity=".85"/>
-    ${eyes}${beak}</svg>`;
-}
-const thinking = msg => `<div class="think">${mascot('think', 92)}<p style="font-weight:700;margin-top:10px">${esc(msg)}</p><p class="small" style="margin-top:4px">${esc(AI.label())}</p></div>`;
-const moodNow = () => { const h = new Date().getHours(); return S.todayDone ? 'happy' : (h >= 23 || h < 5) ? 'sleepy' : 'calm'; };
+/* ---------- 화면 공용 ---------- */
+const thinking = msg => `<div class="spinner"></div><p style="text-align:center;font-weight:600">${esc(msg)}</p><p class="small" style="text-align:center;margin-top:6px">${esc(AI.label())}</p>`;
 const stopsThisWeek = () => (S.stops || []).filter(d => Date.now() - d < 7 * 864e5).length;
 
 /* 오늘 돌아보기를 마쳤을 때 */
@@ -1117,7 +1102,7 @@ function celebrate() {
   S.todayDone = true; save();
   const ds = days(), n = streak();
   const el = document.createElement('div'); el.className = 'celebrate'; el.setAttribute('role', 'status');
-  el.innerHTML = `<div class="pop">${mascot('happy', 120, true)}</div><div class="big num">${n}일</div><p style="font-weight:700;font-size:18px;margin-top:4px">연속으로 돌아봤어요</p>
+  el.innerHTML = `<p style="opacity:.8;font-weight:600">오늘 돌아보기 끝</p><div class="big num">${n}일</div><p style="font-weight:700;font-size:18px;margin-top:6px">연속으로 돌아봤어요</p>
     <div class="dots">${ds.map((d, i) => `<div class="dot ${d['세션'].every(s => s['평가']) ? 'done' : ''} ${i === ds.length - 1 ? 'new' : ''}"><i></i>${d['요일']}</div>`).join('')}</div>
     <button class="btn" style="background:#fff;color:var(--navy);margin-top:36px;max-width:280px">홈으로</button>`;
   $('#phone').appendChild(el);
@@ -1148,13 +1133,16 @@ function shortsDemo(previewNow) {
   function cover() {
     paused = true;
     const c = document.createElement('div'); c.className = 'cover'; c.setAttribute('role', 'alertdialog'); c.setAttribute('aria-label', '정한 시간이 끝났어요');
-    c.innerHTML = `<div class="pop">${mascot('stop', 132, true)}</div>
-      <p class="cover-time num">${String(min).padStart(2, '0')}:00</p>
-      <p class="cover-line">정한 시간이 끝났어요</p>
-      ${S.plan ? `<p class="cover-plan">${esc(S.plan)}</p>` : ''}
-      <div class="cover-mood" role="group" aria-label="지금 기분">${STATES.map(st => `<button data-state="${st}" aria-pressed="false">${MOOD_SHORT[st]}</button>`).join('')}</div>
-      <p class="cover-msg" id="cMsg" hidden></p>
-      <div class="cover-btns"><button class="btn" id="cStop">그만 보기</button><button class="btn cover-more" id="cMore">5분만 더</button></div>`;
+    const h0 = new Date().getHours();
+    const past = weekSessions().filter(x => x['평가'] === '후회' && x['이유'] && SHORT.includes(x['앱'])).sort((p, q) => Math.min(Math.abs(p['시'] - h0), 24 - Math.abs(p['시'] - h0)) - Math.min(Math.abs(q['시'] - h0), 24 - Math.abs(q['시'] - h0)))[0];
+    c.innerHTML = `<div class="alarm-card">
+      <div class="who"><i>${ICON.logo.replace('width="36" height="36"', 'width="14" height="14"')}</i>언스크롤<span style="margin-left:auto">지금</span></div>
+      <div class="alarm">${ICON.alarm}<p class="alarm-time num">${String(min).padStart(2, '0')}:00</p><p style="font-weight:700">정한 ${S.notif.shortLimit}분이 지났어요</p></div>
+      ${S.plan ? `<div class="plan-in"><p class="small">내가 정한 계획</p><b>${esc(S.plan)}</b></div>` : ''}
+      ${past ? `<p class="small why">지난 ${esc(past['요일'])}요일 ${esc(past['시간대'])}에도 ${past['분']}분 보고 "${esc(past['이유'])}"라고 남겼어요</p>` : ''}
+      <div class="chips" style="justify-content:center;margin-top:14px">${STATES.map(st => `<button class="chip soft" data-state="${st}" aria-pressed="false">${MOOD_SHORT[st]}</button>`).join('')}</div>
+      <p class="nmsg" id="cMsg" hidden></p>
+      <div class="pair" style="margin-top:14px"><button class="btn line" id="cMore">5분만 더</button><button class="btn primary" id="cStop">그만 보기</button></div></div>`;
     el.appendChild(c);
     c.querySelectorAll('[data-state]').forEach(b => b.onclick = () => {
       c.querySelectorAll('[data-state]').forEach(x => x.setAttribute('aria-pressed', 'false')); b.setAttribute('aria-pressed', 'true');
@@ -1168,7 +1156,7 @@ function shortsDemo(previewNow) {
       t['숏폼분'] += min; t['총분'] += min;
       S.stops = [...(S.stops || []), Date.now()].slice(-50); save();
       const ok = document.createElement('div'); ok.className = 'celebrate';
-      ok.innerHTML = `<div class="pop">${mascot('happy', 120, true)}</div><p style="font-size:24px;font-weight:850;margin-top:8px">스스로 멈췄어요</p><p style="opacity:.8;margin-top:6px">이번 주 ${stopsThisWeek()}번째 멈춤</p>
+      ok.innerHTML = `<div class="big num" style="font-size:72px">✓</div><p style="font-size:24px;font-weight:850;margin-top:8px">스스로 멈췄어요</p><p style="opacity:.8;margin-top:6px">이번 주 ${stopsThisWeek()}번째 멈춤</p>
         <button class="btn" style="background:#fff;color:var(--navy);margin-top:32px;max-width:280px">좋아요</button>`;
       $('#phone').appendChild(ok);
       ok.querySelector('button').onclick = () => { ok.remove(); tab = 'home'; render(); };
