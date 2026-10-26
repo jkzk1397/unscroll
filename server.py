@@ -38,6 +38,19 @@ def plans():
     plans, log = core.make_plans(body['trigger'], body.get('records', []), body.get('provider', 'mock'), body.get('model'))
     return jsonify({'plans': plans, 'log': log})
 
+@app.post('/api/llm')
+def llm_call():
+    """화면에서 만든 프롬프트를 .env의 AI에 그대로 보내고 답 글자를 돌려준다. 답 확인은 화면 쪽 코드가 한다."""
+    body = request.get_json(force=True)
+    provider = body.get('provider', 'mock')
+    if provider == 'mock' or not llm.has_key(provider):
+        return jsonify({'error': 'AI 키가 없어요'}), 400
+    try:
+        text, sec = llm.ask(provider, body['prompt'][:6000], body.get('model'))
+        return jsonify({'text': text, 'sec': sec})
+    except Exception as e:
+        return jsonify({'error': str(e)}), 502
+
 if __name__ == '__main__':
     port = int(os.getenv('PORT', 8000))
     print(f'언스크롤 시연 서버: http://localhost:{port}')
