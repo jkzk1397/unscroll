@@ -280,6 +280,14 @@ details.ev summary { cursor: pointer; font-size: 13px; color: var(--ink-3); font
 .cover-btns { width: 100%; max-width: 300px; display: grid; gap: 8px; margin-top: 28px; }
 .cover-btns #cStop { background: #fff; color: var(--navy); }
 .cover-more { background: transparent; color: rgba(255,255,255,.8); border: 1.5px solid rgba(255,255,255,.3); }
+
+/* 멈춤 도장 */
+.board { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; margin-top: 12px; }
+.slot { aspect-ratio: 1; max-width: 100%; display: grid; place-items: center; }
+.slot.empty { border: 2px dashed var(--line); border-radius: 50%; }
+.slot.slam { animation: slam .55s cubic-bezier(.2, 1.5, .4, 1) .25s both; }
+@keyframes slam { 0% { transform: scale(2.4); opacity: 0; } 60% { transform: scale(.92); opacity: 1; } 100% { transform: scale(1); } }
+.stamp-moment .board-wrap { width: 100%; max-width: 320px; background: #fff; border-radius: 20px; padding: 6px 14px 14px; margin-top: 18px; }
 </style>
 </head>
 <body>
@@ -316,9 +324,9 @@ const TYPES = {
 };
 const QUICK = ['과제 막혀서', '심심해서', '잠이 안 와서', '알림 보고', '뜨는 대로 보다가'];
 const FRIENDS = [
-  { name: '민지', color: '#7A5AF8', streak: 12, type: '잠이 안 옴', kept: [1, 1, 0, 1, 1, 1, 0] },
-  { name: '준호', color: '#E8833A', streak: 3, type: '연락·알림', kept: [0, 1, 0, 0, 1, 0, 0] },
-  { name: '하은', color: '#2FA894', streak: 8, type: '과제·공부 피하기', kept: [1, 0, 1, 1, 0, 1, 0] },
+  { name: '민지', color: '#7A5AF8', stamps: 6, streak: 12, type: '잠이 안 옴', kept: [1, 1, 0, 1, 1, 1, 0] },
+  { name: '준호', color: '#E8833A', stamps: 2, streak: 3, type: '연락·알림', kept: [0, 1, 0, 0, 1, 0, 0] },
+  { name: '하은', color: '#2FA894', stamps: 5, streak: 8, type: '과제·공부 피하기', kept: [1, 0, 1, 1, 0, 1, 0] },
 ];
 
 let S = load() || fresh();
@@ -329,7 +337,7 @@ function fresh() {
   return { step: 0, name: '', persona: null, seed: 7, data: null, goal: 5, plan: null, planDays: [], trigger: null,
     notif: { review: true, reviewT: '22:00', plan: true, planT: '21:00', week: true, days: [...DAYS], short: true, shortLimit: 15 },
     share: { type: true, streak: true, plan: true }, cheers: {}, provider: 'mock', todayDone: false, lastReflect: null,
-    ai: { key: '', model: 'gemini-2.5-flash' }, corrections: [], planHistory: [], nudges: null, need: '' };
+    ai: { key: '', model: 'gemini-2.5-flash' }, corrections: [], planHistory: [], nudges: null, need: '', stamps: null };
 }
 function load() { try { return JSON.parse(localStorage.getItem(KEY)); } catch (e) { return null; } }
 function save() { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {} }
@@ -628,7 +636,7 @@ function permissionDialog() {
     $('#connectBox').innerHTML = `<div class="spinner"></div><p style="text-align:center;font-weight:600" id="loadTxt">지난 7일 기록을 불러오는 중</p>`;
     $('#connect').classList.add('hidden');
     try {
-      S.data = await api(`/api/screentime?persona=${encodeURIComponent(S.persona)}&seed=${S.seed}`);
+      S.data = await api(`/api/screentime?persona=${encodeURIComponent(S.persona)}&seed=${S.seed}`); seedStamps();
       const avg = Math.round(days().reduce((a, d) => a + d['총분'], 0) / 7);
       $('#connectBox').innerHTML = `<p class="h2">불러왔어요</p><div class="stat-pair"><div class="stat"><span class="small">하루 평균 폰 사용</span><b class="num">${hm(avg)}</b></div><div class="stat"><span class="small">그중 숏폼</span><b class="num">${hm(shortAvg())}</b></div></div>`;
       const nx = document.createElement('button'); nx.className = 'btn primary'; nx.style.marginTop = '24px'; nx.textContent = '다음';
@@ -661,14 +669,15 @@ function compareChips() {
   return `<div class="cmp"><span>${say(t - y, '어제')}</span><span>${say(t - avg, '평균')}</span></div>`;
 }
 function home() {
-  const t = today(), st = streak(), stops = stopsThisWeek();
+  const t = today(), st = streak(), nst = stampsThisWeek().length;
   const ds = days(), dots = ds.map((d, i) => { const done = i < ds.length - 1 ? d['세션'].every(x => x['평가']) : S.todayDone;
     return `<div class="dot ${done ? 'done' : ''} ${i === ds.length - 1 ? 'today' : ''}"><i></i>${d['요일']}</div>`; }).join('');
   const peek = weekPeekText();
   return `<p class="small" style="margin-top:6px">${esc(t['날짜'].slice(5).replace('-', '월 '))}일 ${t['요일']}요일</p>
     <p class="h1">${esc(S.name)}님, 오늘도 돌아볼까요?</p>
-    <div class="block"><div class="row between"><div class="streak"><div class="flame">${ICON.flame}</div><div><span class="streak-n num">${st}일</span><p class="small">연속으로 돌아봤어요</p></div></div>
-      <div style="text-align:right"><b class="num" style="font-size:20px">${stops}번</b><p class="small">스스로 멈춤</p></div></div><div class="dots">${dots}</div></div>
+    <div class="block"><div class="streak"><div class="flame">${ICON.flame}</div><div><span class="streak-n num">${st}일</span><p class="small">연속으로 돌아봤어요</p></div></div><div class="dots">${dots}</div></div>
+    <div class="block"><div class="row between"><b>이번 주 멈춤 도장</b><span class="small num">${nst} / ${BOARD}</span></div>${stampBoard()}
+      <p class="small" style="margin-top:8px">알림 보고 멈추면 도장, 알림이 뜨기 전에 스스로 나오면 금색 도장이에요.</p></div>
     <div class="block"><div class="row between" style="align-items:flex-end"><div><p class="small">오늘 숏폼</p><p class="big-num num">${hm(t['숏폼분'])}</p></div><p class="small" style="text-align:right">폰 전체 ${hm(t['총분'])}</p></div>
       ${compareChips()}${shortChart()}
       <div class="legend" style="justify-content:flex-start"><span style="--c:var(--navy)">숏폼 시청 시간</span><span style="--c:var(--coral)">그중 아쉬웠던 시간</span></div>
@@ -723,11 +732,12 @@ function friends() {
   return `<p class="h1" style="margin-top:6px">친구</p>
     <div class="block"><p class="small">우리 그룹이 같이 줄인 아쉬운 시간</p><p class="big-num num">${hm(GROUP.lastWeek - GROUP.thisWeek)}</p>
       <div class="bar" style="margin-top:10px"><i style="width:${Math.min(100, down * 4)}%;background:var(--teal)"></i></div>
-      <p class="small" style="margin-top:6px">지난주보다 ${down}% 줄었어요 · 목표 25%</p></div>
+      <p class="small" style="margin-top:6px">지난주보다 ${down}% 줄었어요. 목표는 25%</p>
+      <p style="margin-top:10px;font-weight:700">우리 그룹 멈춤 도장 ${FRIENDS.reduce((a, f) => a + f.stamps, 0) + stampsThisWeek().length}개</p></div>
     <div class="block ratio-card"><div><p class="small">아쉬웠던 비율, 나</p><b class="num">${r}%</b></div><div><p class="small">그룹 평균</p><b class="num" style="color:var(--ink-3)">${GROUP.avgRatio}%</b></div></div>
     <div class="block">
       ${[{ name: S.name + ' (나)', color: 'var(--navy)', kept: myKept, me: true }, ...FRIENDS].map(f => `<div class="friend"><div class="avatar" style="background:${f.color}">${esc(f.name[0])}</div>
-        <div style="flex:1;min-width:0"><b>${esc(f.name)}</b><p class="small">${f.me ? (me ? esc(me.name) : '이번 주 돌아보기 전') : esc(TYPES[f.type].name)}</p><div class="mini-dots">${f.kept.map(k => `<i class="${k ? 'k' : ''}"></i>`).join('')}</div></div>
+        <div style="flex:1;min-width:0"><b>${esc(f.name)}</b><p class="small">${f.me ? (me ? esc(me.name) : '이번 주 돌아보기 전') : esc(TYPES[f.type].name)}, 도장 ${f.me ? stampsThisWeek().length : f.stamps}개</p><div class="mini-dots">${f.kept.map(k => `<i class="${k ? 'k' : ''}"></i>`).join('')}</div></div>
         ${f.me ? '' : `<button class="btn ghost sm" data-cheer="${esc(f.name)}">${S.cheers[f.name] ? '응원함' : '응원'}</button>`}</div>`).join('')}
       <div class="pair" style="margin-top:12px"><button class="btn line sm" style="width:100%" id="invite">초대하기</button><button class="btn ${me ? 'primary' : 'line'} sm" style="width:100%" id="openShare" ${me ? '' : 'disabled'}>내 카드 공유</button></div></div>
     <p class="small" style="margin-top:12px">순위는 없어요. 시청 시간과 이유는 친구에게 보이지 않아요.</p>`;
@@ -817,7 +827,7 @@ function bind() {
     toast(d ? 'Gemini에 연결됐어요' : `연결하지 못했어요: ${AI.lastError || '답 형식 오류'}`); $('#aiNow').textContent = AI.label(); };
   const ac = $('#aiClear'); if (ac) ac.onclick = () => { S.ai = { key: '', model: 'gemini-2.5-flash' }; save(); keepScroll(render); toast('키를 지웠어요'); };
   const pv = $('#provider'); if (pv) pv.onchange = () => { S.provider = pv.value; save(); toast('AI를 바꿨어요'); };
-  const rg = $('#regen'); if (rg) rg.onclick = async () => { S.persona = $('#persona2').value; S.seed = Math.floor(Math.random() * 1000); S.data = await api(`/api/screentime?persona=${encodeURIComponent(S.persona)}&seed=${S.seed}`); S.todayDone = false; S.trigger = null; S.plan = null; S.planDays = []; save(); toast('새 가상 기록을 만들었어요'); render(); };
+  const rg = $('#regen'); if (rg) rg.onclick = async () => { S.persona = $('#persona2').value; S.seed = Math.floor(Math.random() * 1000); S.data = await api(`/api/screentime?persona=${encodeURIComponent(S.persona)}&seed=${S.seed}`); seedStamps(); S.todayDone = false; S.trigger = null; S.plan = null; S.planDays = []; save(); toast('새 가상 기록을 만들었어요'); render(); };
   document.querySelectorAll('[data-limit]').forEach(x => x.onchange = () => { S.notif.shortLimit = +x.value; save(); keepScroll(render); });
   document.querySelectorAll('[data-demo-shorts]').forEach(b => b.onclick = () => shortsDemo());
   const rs = $('#reset'); if (rs) rs.onclick = () => { S = fresh(); save(); tab = 'home'; render(); };
@@ -1058,7 +1068,7 @@ async function drawCard() {
   y = cy + R + 160; g.font = F(700, 44); g.fillStyle = '#fff';
   const peak = peakWindow(); if (peak) { y = wrap(g, `숏폼은 ${peak}에 길어졌어요`, 96, y, W - 192, 58, 2) + 74; }
   g.fillStyle = 'rgba(255,255,255,.85)'; g.font = F(500, 38);
-  if (S.share.streak) { g.fillText(`연속 ${streak()}일 돌아봤어요`, 96, y); y += 58; }
+  if (S.share.streak) { g.fillText(`연속 ${streak()}일 돌아봤어요, 멈춤 도장 ${stampsThisWeek().length}개`, 96, y); y += 58; }
   if (S.share.plan && S.plan) wrap(g, `다음 주 계획: ${S.plan}`, 96, y, W - 192, 54, 2);
   g.fillStyle = '#FFC93C'; g.font = F(800, 40); g.fillText('언스크롤', 96, H - 230);
   g.fillStyle = 'rgba(255,255,255,.7)'; g.font = F(500, 30); g.fillText('나도 해 보기  unscroll.app/c/UNS-4821', 96, H - 180);
@@ -1095,7 +1105,6 @@ async function openShare() {
 
 /* ---------- 화면 공용 ---------- */
 const thinking = msg => `<div class="spinner"></div><p style="text-align:center;font-weight:600">${esc(msg)}</p><p class="small" style="text-align:center;margin-top:6px">${esc(AI.label())}</p>`;
-const stopsThisWeek = () => (S.stops || []).filter(d => Date.now() - d < 7 * 864e5).length;
 
 /* 오늘 돌아보기를 마쳤을 때 */
 function celebrate() {
@@ -1107,6 +1116,41 @@ function celebrate() {
     <button class="btn" style="background:#fff;color:var(--navy);margin-top:36px;max-width:280px">홈으로</button>`;
   $('#phone').appendChild(el);
   el.querySelector('button').onclick = () => { el.remove(); tab = 'home'; render(); };
+}
+
+/* ---------- 멈춤 도장: 스스로 멈출 때마다 하나. 알림이 뜨기 전에 멈추면 금색 ---------- */
+const BOARD = 10;
+const stampsThisWeek = () => { const ds = days().map(d => d['날짜']); return (S.stamps || []).filter(x => ds.includes(x.d)); };
+function seedStamps() {   // 시연용: 지난 며칠에 받은 가상 도장
+  const ds = days(); S.stamps = [];
+  [[1, 'alarm', '23:10'], [2, 'alarm', '15:40'], [4, 'early', '22:05'], [5, 'alarm', '16:20']].forEach(([i, k, tm]) => { const d = ds[i]; if (d) S.stamps.push({ d: d['날짜'], 요일: d['요일'], kind: k, 시각: tm }); });
+}
+function stampSVG(st, i = 0) {
+  const gold = st.kind === 'early', c = gold ? '#C98E00' : '#E0533F', rot = ((i * 37) % 25) - 12;
+  return `<svg viewBox="0 0 60 60" width="100%" style="transform:rotate(${rot}deg)" role="img" aria-label="${esc(st['요일'])}요일 ${st['시각'] || ''} ${gold ? '알림 전에 멈춘 금색 도장' : '알림 보고 멈춘 도장'}">
+    ${gold ? '<circle cx="30" cy="30" r="26" fill="#FFF1C7"/>' : ''}
+    <circle cx="30" cy="30" r="26" fill="none" stroke="${c}" stroke-width="3"/><circle cx="30" cy="30" r="21" fill="none" stroke="${c}" stroke-width="1.3" stroke-dasharray="2 2.6"/>
+    ${gold ? `<path d="M30 9.5 l1.6 3.4 3.7.4-2.8 2.5.8 3.7-3.3-1.9-3.3 1.9.8-3.7-2.8-2.5 3.7-.4z" fill="${c}"/>` : ''}
+    <text x="30" y="${gold ? 33 : 30}" text-anchor="middle" font-size="13" font-weight="850" fill="${c}">멈춤</text>
+    <text x="30" y="${gold ? 44 : 42}" text-anchor="middle" font-size="9" font-weight="700" fill="${c}">${esc(st['요일'])}요일</text></svg>`;
+}
+function stampBoard(newIdx = -1) {
+  const list = stampsThisWeek(), extra = Math.max(0, list.length - BOARD);
+  return `<div class="board">${Array.from({ length: BOARD }, (_, i) => list[i] ? `<div class="slot ${i === newIdx ? 'slam' : ''}">${stampSVG(list[i], i)}</div>` : '<div class="slot empty"></div>').join('')}</div>
+    ${extra ? `<p class="small" style="text-align:right">+${extra}개 더</p>` : ''}`;
+}
+function giveStamp(kind, min) {
+  const t = today(), d = new Date();
+  S.stamps = [...(S.stamps || []), { d: t['날짜'], 요일: t['요일'], kind, 시각: `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}` }].slice(-60);
+  save();
+  const n = stampsThisWeek().length, ok = document.createElement('div'); ok.className = 'celebrate stamp-moment';
+  ok.innerHTML = `<p style="opacity:.8;font-weight:600">${kind === 'early' ? '알림이 뜨기 전에 스스로 나왔어요' : `${min}분에서 스스로 멈췄어요`}</p>
+    <p style="font-size:26px;font-weight:850;margin-top:6px">${kind === 'early' ? '금색 멈춤 도장!' : '멈춤 도장 쾅!'}</p>
+    <div class="board-wrap">${stampBoard(Math.min(n, BOARD) - 1)}</div>
+    <p style="opacity:.85;margin-top:12px">이번 주 ${n}개째${n >= BOARD ? ', 도장판을 다 채웠어요!' : ''}</p>
+    <button class="btn" style="background:#fff;color:var(--navy);margin-top:26px;max-width:280px">좋아요</button>`;
+  $('#phone').appendChild(ok);
+  ok.querySelector('button').onclick = () => { ok.remove(); tab = 'home'; render(); };
 }
 
 /* ---------- 시연: 쇼츠 보다가 정한 시간을 넘기면 화면 전체를 가리는 알림 ---------- */
@@ -1122,7 +1166,7 @@ function shortsDemo(previewNow) {
   $('#phone').appendChild(el);
   const feed = $('#sfeed');
   const close = () => { clearInterval(timer); el.remove(); };
-  $('#sClose').onclick = () => { close(); render(); };
+  $('#sClose').onclick = () => { const early = !previewNow && !paused && min >= 3 && min < limit; close(); render(); if (early) giveStamp('early', min); };
   const timer = setInterval(() => {
     if (paused) return;
     min++; $('#sclock').textContent = `${min}분째`;
@@ -1154,12 +1198,7 @@ function shortsDemo(previewNow) {
       const t = today(), d = new Date(), h = d.getHours(), mm = d.getMinutes();
       t['세션'].push({ id: Math.max(0, ...weekSessions().map(x => x.id)) + 1, 앱: '유튜브 쇼츠', 시: h, 분시각: mm, 시작: `${String(h).padStart(2, '0')}:${String(mm).padStart(2, '0')}`, 분: min, 시간대: hourLabel(h), 평가: '', 이유: '' });
       t['숏폼분'] += min; t['총분'] += min;
-      S.stops = [...(S.stops || []), Date.now()].slice(-50); save();
-      const ok = document.createElement('div'); ok.className = 'celebrate';
-      ok.innerHTML = `<div class="big num" style="font-size:72px">✓</div><p style="font-size:24px;font-weight:850;margin-top:8px">스스로 멈췄어요</p><p style="opacity:.8;margin-top:6px">이번 주 ${stopsThisWeek()}번째 멈춤</p>
-        <button class="btn" style="background:#fff;color:var(--navy);margin-top:32px;max-width:280px">좋아요</button>`;
-      $('#phone').appendChild(ok);
-      ok.querySelector('button').onclick = () => { ok.remove(); tab = 'home'; render(); };
+      save(); giveStamp('alarm', min);
     };
   }
 }
@@ -1246,6 +1285,7 @@ const LOCAL = (() => {
   if (!S.persona) S.persona = CFG.personas[0];
   if (S.notif.short === undefined) Object.assign(S.notif, { short: true, shortLimit: 15 });
   S = { ...fresh(), ...S, notif: { ...fresh().notif, ...S.notif } };
+  if (S.data && !S.stamps) seedStamps();
   if (S.step >= 5 && !S.data) S.step = 2;
   render();
 })();
