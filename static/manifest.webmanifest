@@ -1,0 +1,30 @@
+{
+ "name": "언스크롤",
+ "short_name": "언스크롤",
+ "description": "릴스, 쇼츠를 오래 본 순간을 하루 1분 돌아보는 앱",
+ "start_url": "./",
+ "scope": "./",
+ "display": "standalone",
+ "orientation": "portrait",
+ "background_color": "#F3F5F8",
+ "theme_color": "#2E3A8C",
+ "lang": "ko",
+ "icons": [
+  {
+   "src": "icon-192.png",
+   "sizes": "192x192",
+   "type": "image/png"
+  },
+  {
+   "src": "icon-512.png",
+   "sizes": "512x512",
+   "type": "image/png"
+  },
+  {
+   "src": "icon-maskable-512.png",
+   "sizes": "512x512",
+   "type": "image/png",
+   "purpose": "maskable"
+  }
+ ]
+}
