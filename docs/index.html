@@ -291,7 +291,6 @@ details.ev summary { cursor: pointer; font-size: 13px; color: var(--ink-3); font
 
 /* 생성형 기능 2 */
 .say-block textarea { resize: none; margin-top: 8px; line-height: 1.5; }
-#sayMic.on { background: var(--coral-soft); border-color: var(--coral); color: #B9443A; }
 .tag.ai { background: var(--teal-soft); color: #1C7A6A; }
 .bubble.me { align-self: flex-end; background: var(--navy); color: #fff; border-radius: 16px 4px 16px 16px; }
 .bubble.typing { color: var(--ink-3); }
@@ -320,21 +319,129 @@ details.ev summary { cursor: pointer; font-size: 13px; color: var(--ink-3); font
 .goal-row select { flex: 1; min-width: 0; padding: 9px; }
 .bubble.future { background: var(--navy-soft); }
 .tab { font-size: 10.5px; }
+/* 시연용 휴대폰 홈 화면 */
+.os { position: absolute; inset: 0; z-index: 22; color: #fff; background: radial-gradient(120% 80% at 20% 0%, #5B6CC9 0%, #2B336E 45%, #141A3D 100%); display: flex; flex-direction: column; align-items: center; padding: 70px 22px 0; }
+.os-time { font-size: 64px; font-weight: 300; letter-spacing: -0.03em; line-height: 1; }
+.os-date { opacity: .85; margin-top: 6px; font-weight: 600; }
+.os-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 22px 14px; width: 100%; margin-top: auto; margin-bottom: 26px; }
+.os-app { display: flex; flex-direction: column; align-items: center; gap: 6px; color: #fff; font-size: 12px; font-weight: 600; }
+.os-app i { width: 58px; height: 58px; border-radius: 17px; display: grid; place-items: center; box-shadow: 0 4px 12px rgba(0,0,0,.25); }
+.os-app[data-open="feed"] i { animation: nudgeIcon 2.4s ease-in-out infinite; }
+@keyframes nudgeIcon { 0%, 80%, 100% { transform: none; } 88% { transform: translateY(-4px); } }
+.os-hint { font-size: 12px; opacity: .6; margin-bottom: 12px; }
+.sysbar { display: flex; justify-content: space-around; align-items: center; height: 46px; flex: none; width: calc(100% + 44px); margin: 0 -22px; background: rgba(0,0,0,.25); }
+.sysbar button { color: #fff; font-size: 20px; width: 64px; height: 40px; opacity: .9; }
+.sysbar button[data-sys="home"] { font-size: 26px; }
+.qnote { position: absolute; top: 52px; left: 10px; right: 10px; z-index: 5; background: rgba(255,255,255,.97); color: var(--ink); border-radius: 22px; padding: 14px 16px; box-shadow: 0 12px 30px rgba(0,0,0,.3); animation: drop .45s cubic-bezier(.2, 1.2, .4, 1) both; }
+.qnote.bye { transition: transform .4s, opacity .4s; transform: translateY(-120%); opacity: 0; }
+@keyframes drop { from { transform: translateY(-130%); } to { transform: none; } }
+.qnote .who { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--ink-3); font-weight: 600; }
+.qnote .who i { width: 20px; height: 20px; border-radius: 6px; background: var(--navy); display: grid; place-items: center; }
+.qn-t { font-weight: 750; margin-top: 6px; }
+.qn-b[hidden], .qn-r[hidden] { display: none !important; }
+.qn-b, .qn-r { display: flex; gap: 6px; margin-top: 10px; flex-wrap: wrap; }
+.qn-b button { flex: 1; padding: 9px 0; border-radius: 12px; background: var(--surface-2, #EEF0F5); font-weight: 700; font-size: 14px; }
+.qn-b button[data-q="후회"] { background: var(--coral-soft); color: #B9443A; }
+.qn-r button { padding: 7px 11px; border-radius: 999px; background: var(--coral-soft); color: #B9443A; font-weight: 650; font-size: 13px; }
+
+/* 숏폼 앱 (가상) */
+.feed { position: absolute; inset: 0; z-index: 22; background: #000; color: #fff; display: flex; flex-direction: column; overflow: hidden; }
+.ftop { position: absolute; top: 0; left: 0; right: 0; z-index: 3; display: flex; align-items: center; gap: 14px; padding: 48px 16px 10px; background: linear-gradient(rgba(0,0,0,.45), transparent); }
+.ftop b { font-size: 21px; font-weight: 800; margin-right: 6px; }
+.ftab { font-weight: 700; opacity: .6; } .ftab.on { opacity: 1; }
+.fclock { margin-left: auto; background: rgba(255,255,255,.16); padding: 4px 10px; border-radius: 999px; font-size: 13px; font-weight: 700; }
+.fwin { flex: 1; position: relative; overflow: hidden; }
+.ftrack { height: 100%; transition: transform .45s cubic-bezier(.3,.8,.3,1); }
+.fprog { position: absolute; left: 0; right: 0; bottom: 0; height: 2px; background: rgba(255,255,255,.25); z-index: 3; }
+.fprog i { display: block; height: 100%; width: 0; background: #fff; transition: width .5s linear; }
+.clip2 { height: 100%; position: relative; overflow: hidden; }
+.ctitle { position: absolute; top: 108px; left: 18px; right: 70px; z-index: 2; }
+.ctitle b { display: block; font-size: 25px; line-height: 1.25; font-weight: 900; letter-spacing: -0.03em; -webkit-text-stroke: 5px #000; paint-order: stroke fill; }
+.ctitle span { display: inline-block; margin-top: 8px; background: #FFE14D; color: #111; font-weight: 800; padding: 2px 8px; border-radius: 4px; font-size: 15px; }
+.cside { position: absolute; right: 8px; bottom: 96px; z-index: 2; display: flex; flex-direction: column; gap: 16px; align-items: center; }
+.ca { display: flex; flex-direction: column; align-items: center; gap: 2px; color: #fff; font-size: 12px; font-weight: 600; filter: drop-shadow(0 1px 2px rgba(0,0,0,.5)); }
+.ca.on svg { fill: #FF3B5C; stroke: #FF3B5C; animation: likePop .35s; }
+@keyframes likePop { 50% { transform: scale(1.3); } }
+.cfoot { position: absolute; left: 14px; right: 70px; bottom: 16px; z-index: 2; text-shadow: 0 1px 3px rgba(0,0,0,.6); font-size: 14px; }
+.cuser { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+.cuser i { width: 30px; height: 30px; border-radius: 50%; background: linear-gradient(135deg,#999,#555); border: 1.5px solid #fff; }
+.fol { border: 1.3px solid rgba(255,255,255,.8); border-radius: 8px; padding: 1px 9px; font-size: 13px; font-weight: 700; }
+.adl { font-size: 12px; opacity: .75; }
+.music { font-size: 12.5px; opacity: .85; margin-top: 3px; }
+.fnav { display: flex; justify-content: space-around; align-items: center; height: 52px; flex: none; background: #000; border-top: 1px solid #222; }
+.fnav span { opacity: .75; } .fnav span.on { opacity: 1; }
+.fnav .me { width: 26px; height: 26px; border-radius: 50%; background: linear-gradient(135deg,#888,#444); opacity: 1; }
+.feed .sysbar { width: 100%; margin: 0; background: #000; }
+.fhint { transition: opacity .6s; position: absolute; left: 12px; right: 12px; top: 92px; z-index: 4; text-align: center; font-size: 11.5px; background: rgba(0,0,0,.55); padding: 5px 8px; border-radius: 8px; opacity: .85; pointer-events: none; }
+.feed .cover { z-index: 8; }
+.fhint.gone { opacity: 0 !important; }
+.os-widget { width: 100%; margin-top: 34px; background: rgba(255,255,255,.14); backdrop-filter: blur(8px); border-radius: 22px; padding: 14px 16px; text-align: left; color: #fff; }
+.os-widget p { font-size: 12px; opacity: .8; display: flex; align-items: center; gap: 6px; } .os-widget b { font-size: 24px; font-weight: 800; display: block; margin-top: 2px; } .os-widget span { font-size: 12.5px; opacity: .85; }
+/* 가상 영상 그림 */
+.art { position: absolute; inset: 0; display: grid; place-items: center; }
+.laptop .scr { width: 70%; height: 30%; margin-top: 30%; background: #F6F7FA; border: 8px solid #2A2D35; border-radius: 10px 10px 0 0; padding: 12px; display: flex; flex-direction: column; gap: 7px; }
+.laptop .scr i { height: 7px; background: #CDD3DE; border-radius: 4px; }
+.laptop .kb { position: absolute; top: calc(50% + 15% + 34px); width: 82%; height: 14px; background: #3A3E48; border-radius: 0 0 14px 14px; }
+.plate .dish { width: 230px; height: 230px; border-radius: 50%; background: radial-gradient(circle, #E8E1D5 58%, #F7F3EC 60%); position: relative; box-shadow: 0 20px 40px rgba(0,0,0,.4); }
+.plate .dish b { position: absolute; width: 46px; height: 30px; border-radius: 40%; background: #D2542E; }
+.plate .dish b:nth-child(1) { top: 70px; left: 60px; } .plate .dish b:nth-child(2) { top: 100px; left: 110px; background: #E9B23B; } .plate .dish b:nth-child(3) { top: 130px; left: 70px; }
+.plate .dish b:nth-child(4) { top: 80px; left: 130px; background: #5E9A42; width: 30px; } .plate .dish b:nth-child(5) { top: 140px; left: 130px; }
+.plate .cup { position: absolute; right: 36px; top: 64%; width: 50px; height: 62px; border-radius: 6px 6px 14px 14px; background: #C9A27A; }
+.adcard { align-content: center; gap: 12px; padding: 0 30px; text-align: center; color: #3A2A26; }
+.adcard .brand { font-weight: 800; letter-spacing: .2em; font-size: 13px; }
+.adcard .adt { font-size: 28px; font-weight: 900; }
+.adcard .prods { display: flex; gap: 10px; justify-content: center; } .adcard .prods i { width: 80px; height: 110px; border-radius: 10px; background: #fff; box-shadow: 0 6px 14px rgba(0,0,0,.12); }
+.adcard .adbtn { background: #3B6CF0; color: #fff; padding: 12px; border-radius: 10px; font-weight: 800; margin-top: 30px; }
+.chatshot { align-content: center; gap: 8px; padding: 0 28px; } .cb { padding: 9px 13px; border-radius: 16px; max-width: 75%; font-weight: 600; }
+.cb.l { background: #2B2B2E; justify-self: start; } .cb.r { background: #3B82F6; justify-self: end; }
+.cin { margin-top: 10px; border: 1px solid #444; border-radius: 20px; padding: 8px 14px; color: #888; font-size: 13px; }
+.face .head { width: 120px; height: 140px; border-radius: 50%; background: #C89F82; margin-top: -60px; } .face .body { position: absolute; bottom: 0; width: 260px; height: 220px; border-radius: 130px 130px 0 0; background: #3D4250; }
+.face .tag2 { position: absolute; bottom: 220px; background: #fff; color: #111; font-weight: 900; padding: 3px 10px; font-size: 18px; }
+.postcard { align-content: center; padding: 0 22px; } .postcard > * { background: #fff; color: #222; }
+.postcard .pboard { padding: 10px 16px 0; border-radius: 14px 14px 0 0; font-size: 12px; color: #D33C2C; font-weight: 700; } .postcard .ptitle { padding: 6px 16px 0; font-weight: 800; font-size: 17px; }
+.postcard .pmeta { padding: 2px 16px 0; font-size: 11.5px; color: #999; } .postcard .pbody { padding: 10px 16px; font-size: 14.5px; line-height: 1.55; }
+.postcard .pvote { padding: 4px 16px 14px; border-radius: 0 0 14px 14px; display: flex; gap: 12px; } .postcard .pvote b { border: 1px solid #ddd; border-radius: 8px; padding: 2px 12px; font-size: 13px; color: #D33C2C; }
+.gamescr .gs { width: 86%; aspect-ratio: 16/10; background: linear-gradient(180deg,#5EB7F7,#3E8F3E 60%); border-radius: 8px; position: relative; }
+.gamescr .gs i { position: absolute; width: 22px; height: 22px; border-radius: 4px; background: #FFD43B; } .gamescr .gs i:nth-child(1) { left: 20%; top: 45%; } .gamescr .gs i:nth-child(2) { left: 40%; top: 30%; background: #E8590C; } .gamescr .gs i:nth-child(3) { left: 62%; top: 50%; } .gamescr .gs i:nth-child(4) { left: 75%; top: 25%; background: #fff; } .gamescr .gs i:nth-child(5) { left: 10%; top: 70%; background: #7048E8; } .gamescr .gs i:nth-child(6) { left: 85%; top: 68%; }
+.darkroom i { width: 140px; height: 240px; border-radius: 20px; background: radial-gradient(circle at 50% 40%, rgba(150,180,255,.5), rgba(40,60,120,.1) 70%); filter: blur(4px); }
+.catbox .box { position: absolute; bottom: 22%; width: 200px; height: 120px; background: #B07C46; border-radius: 4px; } .catbox svg { position: relative; margin-bottom: 20%; }
+.gymart .bar2 { width: 76%; height: 10px; background: #B8C0CC; border-radius: 5px; } .gymart .plate2 { position: absolute; width: 26px; height: 110px; background: #1C1F26; border: 3px solid #4A5160; border-radius: 6px; } .gymart .plate2.l { left: 14%; } .gymart .plate2.r { right: 14%; }
+
+/* 친구 */
+.avatar.sm { width: 32px; height: 32px; font-size: 13px; }
+.fitem { display: flex; gap: 10px; padding: 11px 0; border-top: 1px solid var(--line); align-items: flex-start; font-size: 14px; }
+.block > b + .fitem { border-top: 0; margin-top: 4px; }
+.goldtag { background: #FFF1C7; color: #9A6B00; font-size: 11.5px; font-weight: 800; padding: 1px 6px; border-radius: 6px; }
+.chal-days { display: flex; gap: 5px; margin-top: 12px; } .chal-days span { flex: 1; text-align: center; padding: 7px 0; border-radius: 9px; background: var(--line); font-size: 12px; font-weight: 700; color: var(--ink-3); }
+.chal-days span.k { background: var(--teal); color: #fff; } .chal-days span.now { outline: 2px dashed var(--teal); outline-offset: -2px; }
+.chal-rows { margin-top: 10px; } .chal-rows p { display: flex; justify-content: space-between; padding: 6px 0; font-size: 14px; }
+.st { font-weight: 700; font-size: 13px; } .st.ok { color: var(--teal); } .st.wait { color: var(--ink-3); } .st.miss { color: #B9443A; }
+.thread { display: flex; flex-direction: column; gap: 8px; margin-top: 12px; } .thread:empty { display: none; }
+.bubble.them { background: var(--surface-2, #EEF0F5); }
+
+/* 시연 순서 */
+.side-note .dp-t { font-size: 20px; font-weight: 800; color: var(--ink); margin-bottom: 4px; }
+.dp-b { display: flex; gap: 10px; align-items: center; width: 100%; text-align: left; padding: 11px 12px; margin-top: 8px; border-radius: 14px; background: #fff; font-weight: 650; color: var(--ink); font-size: 14px; box-shadow: 0 1px 0 rgba(0,0,0,.04); }
+.dp-b b { width: 24px; height: 24px; border-radius: 50%; background: var(--navy); color: #fff; display: grid; place-items: center; font-size: 12.5px; flex: none; }
+.dp-b:hover { background: var(--navy-soft); }
+.dp-reset { margin-top: 12px; font-size: 13px; color: var(--ink-3); text-decoration: underline; }
+.demo-fab { display: none; }
+@media (max-width: 760px) { .demo-fab { display: block; position: fixed; right: 12px; bottom: 84px; z-index: 40; background: var(--ink); color: #fff; font-weight: 800; font-size: 13px; padding: 9px 13px; border-radius: 999px; opacity: .85; }
+  .os { padding-top: max(40px, env(safe-area-inset-top)); } .ftop { padding-top: max(14px, env(safe-area-inset-top)); } .qnote { top: max(12px, env(safe-area-inset-top)); } }
+.demo-sheet .dp-t { font-weight: 800; font-size: 18px; } .demo-sheet .dp-b { background: var(--surface); }
 </style>
 </head>
 <body>
 <div class="stage">
-  <div class="side-note">
-    <h1>언스크롤 1차 프로토타입</h1>
-    <p>릴스나 쇼츠를 오래 본 순간을 하루 1분 돌아보고, 생성형 AI와 그 계기를 찾는 앱입니다.</p>
-    <p>시연에서는 휴대폰 사용 기록 대신 가상 스크린타임을 씁니다. 세션 길이 비율은 실제 공개 데이터(LSApp)를 따랐습니다.</p>
-    <p>휴대폰으로 이 링크를 열면 앱 화면처럼 꽉 차게 보여요. 설정에서 Gemini 키를 넣으면 실제 AI로 바뀌어요.</p>
+  <div class="side-note" id="demoPanel">
+    <p class="small" style="margin-bottom:10px">언스크롤 프로토타입. 기록은 가상이고, 친구도 가상 인물이에요.</p>
   </div>
   <div class="phone" id="phone">
     <div class="statusbar"><span id="clock">9:41</span><span>●●● 5G ▮</span></div>
     <main class="screen" id="screen" tabindex="-1"></main>
     <nav class="tabbar hidden" id="tabbar" aria-label="메뉴"></nav>
   </div>
+  <button class="demo-fab" id="demoFab">시연</button>
 </div>
 
 <script>
@@ -370,7 +477,7 @@ function fresh() {
   return { step: 0, name: '', persona: null, seed: 7, data: null, goal: 5, plan: null, planDays: [], trigger: null,
     notif: { review: true, reviewT: '22:00', plan: true, planT: '21:00', week: true, days: [...DAYS], short: true, shortLimit: 15 },
     share: { type: true, streak: true, plan: true }, cheers: {}, provider: 'mock', todayDone: false, lastReflect: null,
-    ai: { key: '', model: 'gemini-2.5-flash' }, corrections: [], planHistory: [], nudges: null, need: '', stamps: null, tone: '다정하게', prevWeek: null, review: null, goal2: null, weekNo: 0, goalsDone: [] };
+    ai: { key: '', model: 'gemini-2.5-flash' }, corrections: [], planHistory: [], nudges: null, need: '', stamps: null, tone: '다정하게', prevWeek: null, review: null, goal2: null, weekNo: 0, goalsDone: [], challenge: false };
 }
 function load() { try { return JSON.parse(localStorage.getItem(KEY)); } catch (e) { return null; } }
 function save() { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {} }
@@ -745,7 +852,7 @@ function home() {
     <div class="block"><b>하루 시계</b><p class="small">바깥 고리는 고른 날, 안쪽 산은 일주일 동안 숏폼을 본 시간대예요.</p>
       ${ringBlock(250)}
       <div class="pair" style="margin-top:14px"><button class="btn ghost" id="openReflect">이번 주 돌아보기</button><button class="btn line" id="openAsk">기록에게 묻기</button></div></div>
-    ${S.notif.short ? `<button class="btn line" style="margin-top:14px" data-demo-shorts>시연: 쇼츠 보다가 ${S.notif.shortLimit}분 넘기기</button>` : ''}`;
+    ${S.notif.short ? `<button class="btn line" style="margin-top:14px" data-demo-shorts>시연: 휴대폰에서 숏폼 보다가 ${S.notif.shortLimit}분 넘기기</button>` : ''}`;
 }
 function weekPeekText() {
   const reg = weekSessions().filter(s => s['평가'] === '후회' && SHORT.includes(s['앱']));
@@ -753,6 +860,70 @@ function weekPeekText() {
   const pk = peakWindow();
   return `이번 주 아쉬웠던 숏폼은 ${reg.length}번${pk ? `, 주로 ${pk}였어요` : '이었어요'}.`;
 }
+/* 친구 소식 (시연용 가상 친구. 실제 사람이 아니에요) */
+const FEED = [
+  { who: '민지', ago: '12분 전', what: '알림이 뜨기 전에 숏폼에서 나와 금색 도장을 받았어요', gold: true },
+  { who: '하은', ago: '1시간 전', what: '"과제 막히면 물 마시고 25분" 계획을 3일째 지켰어요' },
+  { who: '준호', ago: '3시간 전', what: '오늘 돌아보기를 마쳤어요' },
+  { who: '민지', ago: '어제', what: '오늘 밤 챌린지를 지켰어요' },
+];
+const REPLY = {
+  '민지': ['고마워! 너도 오늘 밤 같이 버티자', '헉 응원 받으니까 오늘도 일찍 자야겠다'],
+  '준호': ['ㅋㅋ 고마워 나 요즘 알림 꺼 둠', '응원 고마워! 나도 도장 하나 받아 볼게'],
+  '하은': ['고마워ㅠ 과제 끝나면 같이 밥 먹자', '오 덕분에 힘 난다. 너도 계획 화이팅'],
+};
+const MOCK_CHEER = {
+  '잠이 안 옴': n => `${n}아, 요즘 밤에 잘 끊고 있다며! 오늘도 일찍 눕자`,
+  '연락·알림': n => `${n}, 알림 줄이는 거 쉽지 않은데 잘하고 있어!`,
+  '과제·공부 피하기': n => `${n}, 과제하면서 계획 지키는 거 멋있다. 오늘도 화이팅`,
+};
+const lateMin = () => today()['세션'].filter(x => SHORT.includes(x['앱']) && x['시'] < 5).reduce((a, x) => a + x['분'], 0);
+function challengeCard() {
+  const on = S.challenge, late = lateMin(), h = new Date().getHours();
+  const me = !on ? null : late > 0 ? ['못 지켰어요', 'miss'] : h < 5 ? ['지키는 중', 'ok'] : ['오늘 밤 12시부터', 'wait'];
+  const rows = [['민지', '지키는 중', 'ok'], ['하은', '지키는 중', 'ok'], ['준호', '아직 안 들어옴', 'wait']];
+  return `<div class="block chal"><p class="small">이번 주 그룹 챌린지</p><p class="h2" style="margin-top:4px">밤 12시 넘어서 숏폼 0분</p>
+    <p class="small" style="margin-top:4px">한 명이라도 지키면 그날 그룹 칸이 채워져요. 일주일 중 5칸이 목표예요</p>
+    <div class="chal-days">${DAYS.map((d, i) => `<span class="${i < days().length - 1 && [1, 1, 0, 1, 1, 0, 0][i] ? 'k' : ''} ${i === days().length - 1 ? 'now' : ''}">${d}</span>`).join('')}</div>
+    <div class="chal-rows">${rows.map(([n, t, k]) => `<p><b>${n}</b><span class="st ${k}">${t}</span></p>`).join('')}
+      ${on ? `<p><b>${esc(S.name)} (나)</b><span class="st ${me[1]}">${me[0]}</span></p>` : ''}</div>
+    ${on ? '' : '<button class="btn primary sm" style="width:100%;margin-top:10px" id="joinChal">나도 참여하기</button>'}</div>`;
+}
+function feedHTML() {
+  const mine = stampsThisWeek().slice(-1).map(st => ({ who: S.name + ' (나)', ago: '오늘', what: st.kind === 'early' ? '금색 도장을 받았어요' : '멈춤 도장을 받았어요', gold: st.kind === 'early', me: true }));
+  const f = [...(mine[0] && mine[0].ago === '오늘' && stampsThisWeek().slice(-1)[0].d === today()['날짜'] ? mine : []), ...FEED];
+  return `<div class="block"><b>친구 소식</b>${f.map(x => { const fr = FRIENDS.find(y => y.name === x.who);
+    return `<div class="fitem"><div class="avatar sm" style="background:${fr ? fr.color : 'var(--navy)'}">${esc(x.who[0])}</div><div style="flex:1;min-width:0"><p><b>${esc(x.who)}</b> ${esc(x.what)}${x.gold ? ' <span class="goldtag">금색</span>' : ''}</p><p class="small">${x.ago}</p></div></div>`; }).join('')}</div>`;
+}
+async function draftCheer(f) {
+  if (AI.mode() !== 'mock') {
+    const d = await AI.ask(PROMPT.cheer({ name: f.name, type: TYPES[f.type].name, stamps: f.stamps, streak: f.streak }), '친구 응원 초안');
+    if (d && d['응원'] && d['응원'].length <= 50 && !badText(d['응원'])) { AI.mark('통과'); return d['응원']; }
+    if (d) AI.mark('걸러냄: 길이나 표현 문제');
+  } else AI.mock('친구 응원 초안', '유형별 정해 둔 문장');
+  return MOCK_CHEER[f.type](f.name);
+}
+async function openCheer(name) {
+  const f = FRIENDS.find(x => x.name === name), old = S.cheers[name];
+  const bg = document.createElement('div'); bg.className = 'sheet-bg'; bg.id = 'cheerSheet';
+  bg.innerHTML = `<div class="sheet"><div class="row" style="gap:10px"><div class="avatar" style="background:${f.color}">${esc(f.name[0])}</div><div><b>${esc(f.name)}에게 응원</b><p class="small">${esc(TYPES[f.type].name)}, 이번 주 도장 ${f.stamps}개</p></div></div>
+    <div class="thread" id="cThread">${old && old.msg ? `<p class="bubble me">${esc(old.msg)}</p>${old.reply ? `<p class="bubble them">${esc(old.reply)}</p>` : ''}` : ''}</div>
+    <p class="small" style="margin-top:12px">AI가 친구 유형과 도장을 보고 초안을 써요. 고쳐서 보내도 돼요</p>
+    <textarea class="reason" id="cIn" rows="2" maxlength="60" placeholder="AI가 쓰는 중…" disabled></textarea>
+    <div class="pair" style="margin-top:8px"><button class="btn line sm" style="width:100%" id="cAgain">다시 쓰기</button><button class="btn primary sm" style="width:100%" id="cSend" disabled>보내기</button></div>
+    <button class="btn line sm" style="width:100%;margin-top:8px" id="cClose">닫기</button></div>`;
+  $('#phone').appendChild(bg);
+  const fill = async () => { const t = $('#cIn'); t.disabled = true; t.value = ''; t.placeholder = 'AI가 쓰는 중…'; const m = await draftCheer(f); if (!$('#cIn')) return; t.value = m; t.disabled = false; $('#cSend').disabled = false; };
+  $('#cAgain').onclick = fill; $('#cClose').onclick = () => { bg.remove(); render(); };
+  $('#cSend').onclick = () => {
+    const msg = $('#cIn').value.trim(); if (!msg) return; if (badText(msg.replace(/\d/g, ''))) { toast('보내기 어려운 표현이 있어요'); return; }
+    S.cheers[name] = { msg, reply: '' }; save();
+    $('#cThread').innerHTML = `<p class="bubble me">${esc(msg)}</p><p class="bubble them typing">…</p>`; $('#cSend').disabled = true; $('#cIn').value = '';
+    setTimeout(() => { const r = REPLY[name][Math.floor(Math.random() * 2)]; S.cheers[name].reply = r; save(); const th = $('#cThread'); if (th) th.innerHTML = `<p class="bubble me">${esc(msg)}</p><p class="bubble them">${esc(r)}</p>`; }, 1600);
+  };
+  fill();
+}
+
 /* 오늘 돌아보기: 숏폼부터, 내용은 한 탭, 다른 앱은 선택, 건너뛰기 가능 */
 function review() {
   const ss = today()['세션'], sh = ss.filter(s => SHORT.includes(s['앱'])), other = ss.filter(s => !SHORT.includes(s['앱']));
@@ -766,9 +937,9 @@ function review() {
     </div>`;
   return `<p class="h1" style="margin-top:6px">오늘 돌아보기</p>
     <p class="sub" style="margin-top:6px">숏폼을 오래 본 ${sh.length}번, 어땠어요?</p>
-    <div class="block say-block"><p style="font-weight:700">말로 한 번에 하기</p><p class="small">편하게 말하거나 쓰면 AI가 아래 기록에 나눠 채워요</p>
+    <details class="block say-block"><summary style="font-weight:700;cursor:pointer">한 줄로 적고 AI에게 맡기기</summary><p class="small" style="margin-top:6px">하나씩 누르기 귀찮으면 편하게 적어요. AI가 아래 기록에 나눠 채워요</p>
       <textarea class="reason" id="sayIn" rows="2" maxlength="200" placeholder="예: 점심 쇼츠는 재밌었는데, 밤에 틱톡은 과제 막혀서 괜히 봤어"></textarea>
-      <div class="pair" style="margin-top:8px"><button class="btn line sm" style="width:100%" id="sayMic" aria-pressed="false">${ICON.mic} 말하기</button><button class="btn primary sm" style="width:100%" id="sayGo">AI로 채우기</button></div></div>
+      <button class="btn primary sm" style="width:100%;margin-top:8px" id="sayGo">AI로 채우기</button></details>
     ${sh.map(card).join('') || '<div class="block"><b>오늘은 숏폼을 오래 본 적이 없어요</b></div>'}
     ${other.length ? `<details class="others"><summary>다른 앱 ${other.length}개도 돌아보기 (선택)</summary>${other.map(card).join('')}</details>` : ''}
     <button class="btn primary" style="margin-top:18px" id="finish" ${left ? 'disabled' : ''}>${left ? `${left}개 남았어요` : '다 했어요'}</button>
@@ -792,13 +963,14 @@ function friends() {
       <div class="bar" style="margin-top:10px"><i style="width:${Math.min(100, down * 4)}%;background:var(--teal)"></i></div>
       <p class="small" style="margin-top:6px">지난주보다 ${down}% 줄었어요. 목표는 25%</p>
       <p style="margin-top:10px;font-weight:700">우리 그룹 멈춤 도장 ${FRIENDS.reduce((a, f) => a + f.stamps, 0) + stampsThisWeek().length}개</p></div>
+    ${challengeCard()}${feedHTML()}
     <div class="block ratio-card"><div><p class="small">아쉬웠던 비율, 나</p><b class="num">${r}%</b></div><div><p class="small">그룹 평균</p><b class="num" style="color:var(--ink-3)">${GROUP.avgRatio}%</b></div></div>
     <div class="block">
       ${[{ name: S.name + ' (나)', color: 'var(--navy)', kept: myKept, me: true }, ...FRIENDS].map(f => `<div class="friend"><div class="avatar" style="background:${f.color}">${esc(f.name[0])}</div>
         <div style="flex:1;min-width:0"><b>${esc(f.name)}</b><p class="small">${f.me ? (me ? esc(me.name) : '이번 주 돌아보기 전') : esc(TYPES[f.type].name)}, 도장 ${f.me ? stampsThisWeek().length : f.stamps}개</p><div class="mini-dots">${f.kept.map(k => `<i class="${k ? 'k' : ''}"></i>`).join('')}</div></div>
-        ${f.me ? '' : `<button class="btn ghost sm" data-cheer="${esc(f.name)}">${S.cheers[f.name] ? '응원함' : '응원'}</button>`}</div>`).join('')}
+        ${f.me ? '' : `<button class="btn ghost sm" data-cheer="${esc(f.name)}">${S.cheers[f.name] ? '대화 보기' : '응원'}</button>`}</div>`).join('')}
       <div class="pair" style="margin-top:12px"><button class="btn line sm" style="width:100%" id="invite">초대하기</button><button class="btn ${me ? 'primary' : 'line'} sm" style="width:100%" id="openShare" ${me ? '' : 'disabled'}>내 카드 공유</button></div></div>
-    <p class="small" style="margin-top:12px">순위는 없어요. 시청 시간과 이유는 친구에게 보이지 않아요.</p>`;
+    <p class="small" style="margin-top:12px">순위는 없어요. 시청 시간과 이유는 친구에게 보이지 않아요. 시연 속 친구들은 가상 인물이에요.</p>`;
 }
 
 /* 오늘 돌아보기: 숏폼부터, 내용은 한 탭, 다른 앱은 선택, 건너뛰기 가능 */
@@ -818,7 +990,7 @@ function settings() {
     <div class="block"><div class="row between"><b>숏폼 오래 볼 때 알려 주기</b>${sw('short', N.short)}</div>
       <p class="small">릴스, 쇼츠를 한 번에 정한 시간보다 오래 보면 화면 위에 알려 드려요. 앱을 막지는 않아요.</p>
       <div class="set-row"><span>한 번에</span><div class="row">${limitSel(N.shortLimit)}<span>넘게 보면</span></div></div>
-      <button class="btn line sm" style="width:100%;margin-top:4px" data-demo-shorts>시연: 쇼츠 보는 화면 열기</button></div>
+      <button class="btn line sm" style="width:100%;margin-top:4px" data-demo-shorts>시연: 휴대폰 화면 열기</button></div>
     <div class="block"><b>알림</b><p class="small">폰을 켤 때마다 오지 않아요. 정한 시간에만, 하루 두 개까지 와요.</p>
       <div class="set-row"><span>오늘 돌아보기</span><div class="row">${sel('reviewT', N.reviewT)}${sw('review', N.review)}</div></div>
       <div class="set-row"><span>내 계획</span><div class="row">${sel('planT', N.planT)}${sw('plan', N.plan)}</div></div>
@@ -866,7 +1038,8 @@ function bind() {
   const o = $('#openReflect'); if (o) o.onclick = openReflect;
   const oa = $('#openAsk'); if (oa) oa.onclick = openAsk;
   // 친구
-  document.querySelectorAll('[data-cheer]').forEach(b => b.onclick = () => { S.cheers[b.dataset.cheer] = 1; save(); toast(`${b.dataset.cheer}님에게 응원을 보냈어요`); render(); });
+  document.querySelectorAll('[data-cheer]').forEach(b => b.onclick = () => openCheer(b.dataset.cheer));
+  const jc = $('#joinChal'); if (jc) jc.onclick = () => { S.challenge = true; save(); keepScroll(render); toast('챌린지에 참여했어요. 오늘 밤부터 같이 해요'); };
   const inv = $('#invite'); if (inv) inv.onclick = async () => {
     const text = `언스크롤에서 같이 릴스, 쇼츠 본 시간 돌아보자! 내 코드: UNS-4821`;
     try { if (navigator.share) await navigator.share({ title: '언스크롤', text }); else { await navigator.clipboard.writeText(text); toast('초대 문구를 복사했어요'); } } catch (e) {}
@@ -881,12 +1054,11 @@ function bind() {
   const mn = $('#moreNotif'); if (mn) mn.onclick = () => { document.querySelectorAll('.notif.more').forEach(x => x.classList.remove('hidden')); mn.remove(); };
   document.querySelectorAll('[data-tagc]').forEach(b => b.onclick = () => { const s2 = today()['세션'].find(x => x.id == b.closest('.session').dataset.id); s2['내용'] = s2['내용'] === b.dataset.tagc ? '' : b.dataset.tagc; save(); keepScroll(render); });
   const sg = $('#sayGo'); if (sg) sg.onclick = async () => {
-    const v = $('#sayIn').value.trim(); if (!v) { toast('한마디 적거나 말해 주세요'); return; }
+    const v = $('#sayIn').value.trim(); if (!v) { toast('한마디 적어 주세요'); return; }
     sg.disabled = true; sg.textContent = 'AI가 정리 중…';
     const r = await parseDay(v);
     if (r.crisis) { toast('힘든 마음이 느껴져요. 109 또는 학생상담센터에 이야기해 보세요'); sg.disabled = false; sg.textContent = 'AI로 채우기'; return; }
     keepScroll(render); toast(r.n ? `AI가 ${r.n}개를 채웠어요. 맞는지 확인해 주세요` : '말에서 기록을 찾지 못했어요. 앱 이름이나 시간대를 넣어 주세요'); };
-  const sm = $('#sayMic'); if (sm) sm.onclick = () => voiceInput($('#sayIn'), sm);
   const sk = $('#skipDay'); if (sk) sk.onclick = () => { S.todayDone = true; save(); toast('오늘은 쉬어 가요. 내일 다시 알려 드릴게요'); tab = 'home'; render(); };
   const at = $('#aiTest'); if (at) at.onclick = async () => {
     S.ai = { key: $('#aiKey').value.trim(), model: $('#aiModel').value.trim() || 'gemini-2.5-flash' }; save();
@@ -902,7 +1074,7 @@ function bind() {
   const pv = $('#provider'); if (pv) pv.onchange = () => { S.provider = pv.value; save(); toast('AI를 바꿨어요'); };
   const rg = $('#regen'); if (rg) rg.onclick = async () => { S.persona = $('#persona2').value; S.seed = Math.floor(Math.random() * 1000); S.data = await api(`/api/screentime?persona=${encodeURIComponent(S.persona)}&seed=${S.seed}`); seedStamps(); S.todayDone = false; S.trigger = null; S.plan = null; S.planDays = []; save(); toast('새 가상 기록을 만들었어요'); render(); };
   document.querySelectorAll('[data-limit]').forEach(x => x.onchange = () => { S.notif.shortLimit = +x.value; save(); keepScroll(render); });
-  document.querySelectorAll('[data-demo-shorts]').forEach(b => b.onclick = () => shortsDemo());
+  document.querySelectorAll('[data-demo-shorts]').forEach(b => b.onclick = () => osHome());
   const rs = $('#reset'); if (rs) rs.onclick = () => { S = fresh(); save(); tab = 'home'; render(); };
 }
 function keepScroll(fn) { const y = $('#screen').scrollTop; fn(); $('#screen').scrollTop = y; }
@@ -1149,6 +1321,11 @@ JSON으로만 답하라: {"답": "...", "근거": ["화요일 밤 12시, 릴스 
 사용자가 고친 내용: ${c.fix || '없음'}
 계획이 통했는지 한두 문장으로 평가하고(숫자는 쓰지 않는다, 위 숫자에 없는 원인은 지어내지 않는다), 유지, 고치기, 바꾸기 중 하나를 제안하라. 고치기나 바꾸기면 '만약 ~하면, ~한다' 형식으로 고친 계획을 40자 이내로 써라. 진단이나 훈계는 쓰지 않는다.
 JSON으로만 답하라: {"평가": "...", "제안": "유지", "고친 계획": ""}`,
+  cheer: c => `${toneLine()}
+대학생 친구에게 보낼 짧은 응원 메시지 초안을 반말로 써라.
+친구 이름: ${c.name}, 이번 주 유형: ${c.type}, 이번 주 멈춤 도장: ${c.stamps}개, 연속 돌아보기: ${c.streak}일
+지킬 것: 40자 이내, 친구 이름을 한 번 넣는다. 훈계, 비교, 진단(중독 등) 없이 가볍게. 숫자는 쓰지 않는다.
+JSON으로만 답하라: {"응원": "..."}`,
   caption: c => `${toneLine()}
 친구에게 공유할 주간 카드에 넣을 재치 있는 한 줄을 써라.
 이번 주 유형: ${c.type} (${c.line})
@@ -1195,17 +1372,6 @@ async function parseDay(text) {
   d['기록'].forEach(r => { const x = ss[r['번호'] - 1]; if (!x) return; x['평가'] = r['평가']; x['이유'] = r['평가'] === '후회' ? String(r['이유'] || '').slice(0, 20) : ''; x['AI채움'] = true; n++; });
   save(); return { n, total: ss.length };
 }
-function voiceInput(target, btn) {
-  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-  if (!SR) { toast('이 브라우저에서는 음성 입력이 안 돼요. 글로 적어 주세요'); return; }
-  const r = new SR(); r.lang = 'ko-KR'; r.interimResults = true; const base = target.value ? target.value + ' ' : '';
-  btn.classList.add('on'); btn.setAttribute('aria-pressed', 'true');
-  r.onresult = e => { target.value = base + [...e.results].map(x => x[0].transcript).join(''); };
-  r.onend = () => { btn.classList.remove('on'); btn.setAttribute('aria-pressed', 'false'); };
-  r.onerror = () => toast('음성을 듣지 못했어요. 마이크 권한을 확인해 주세요');
-  r.start();
-}
-
 /* 묻고 답하기: 내 기록만 근거로 답하는 대화 */
 function dataContext() {
   const reg = weekSessions().filter(x => x['평가'] === '후회').slice(-20);
@@ -1451,17 +1617,16 @@ function futureTab() {
   }
   return head + `<div class="block"><p style="font-weight:700">다음 주에는 어떻게 지내고 싶어요?</p><p class="small">예: 시험 기간이라 밤 12시 넘어서는 쇼츠 그만 보고 싶어</p>
       <textarea class="reason" id="goalIn" rows="3" maxlength="200" placeholder="편하게 말하거나 써 주세요"></textarea>
-      <div class="pair" style="margin-top:8px"><button class="btn line sm" style="width:100%" id="goalMic" aria-pressed="false">${ICON.mic} 말하기</button><button class="btn primary sm" style="width:100%" id="goalGo">AI로 정리하기</button></div></div>
+      <button class="btn primary sm" style="width:100%;margin-top:8px" id="goalGo">AI로 정리하기</button></div>
     <div class="block"><p class="small">이렇게 돼요</p><ul class="obs"><li>AI가 목표 한 줄, 앱이 확인할 기준, 다음 주의 나에게 쓰는 편지로 정리해요</li><li>편지는 일주일 동안 봉인돼요</li><li>일주일 뒤 앱이 잰 결과와 편지를 같이 열어 봐요</li></ul></div>`;
 }
 function bindFuture() {
   const gi = $('#goalGo'); if (gi) gi.onclick = async () => {
-    const v = $('#goalIn').value.trim(); if (!v) { toast('목표를 한마디 적거나 말해 주세요'); return; }
+    const v = $('#goalIn').value.trim(); if (!v) { toast('목표를 한마디 적어 주세요'); return; }
     gi.disabled = true; gi.textContent = 'AI가 정리 중…';
     const g = await makeGoal(v);
     if (g.crisis) { toast('힘든 마음이 느껴져요. 109 또는 학생상담센터에 이야기해 보세요'); gi.disabled = false; gi.textContent = 'AI로 정리하기'; return; }
     S.goal2 = { ...g, sealed: false }; save(); keepScroll(render); };
-  const gm = $('#goalMic'); if (gm) gm.onclick = () => voiceInput($('#goalIn'), gm);
   const met = $('#gMetric'); if (met) met.onchange = () => { S.goal2['지표'] = met.value; if (met.value === 'app' && !S.goal2['앱']) S.goal2['앱'] = SHORT[0]; S.goal2['기준'] = measure(met.value, S.goal2['앱']); save(); keepScroll(render); };
   const ga = $('#gApp'); if (ga) ga.onchange = () => { S.goal2['앱'] = ga.value; save(); keepScroll(render); };
   const seal = $('#goalSeal'); if (seal) seal.onclick = () => {
@@ -1609,7 +1774,7 @@ function stampBoard(newIdx = -1) {
   return `<div class="board">${Array.from({ length: BOARD }, (_, i) => list[i] ? `<div class="slot ${i === newIdx ? 'slam' : ''}">${stampSVG(list[i], i)}</div>` : '<div class="slot empty"></div>').join('')}</div>
     ${extra ? `<p class="small" style="text-align:right">+${extra}개 더</p>` : ''}`;
 }
-function giveStamp(kind, min) {
+function giveStamp(kind, min, after) {
   const t = today(), d = new Date();
   S.stamps = [...(S.stamps || []), { d: t['날짜'], 요일: t['요일'], kind, 시각: `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}` }].slice(-60);
   save();
@@ -1620,29 +1785,126 @@ function giveStamp(kind, min) {
     <p style="opacity:.85;margin-top:12px">이번 주 ${n}개째${n >= BOARD ? ', 도장판을 다 채웠어요!' : ''}</p>
     <button class="btn" style="background:#fff;color:var(--navy);margin-top:26px;max-width:280px">좋아요</button>`;
   $('#phone').appendChild(ok);
-  ok.querySelector('button').onclick = () => { ok.remove(); tab = 'home'; render(); };
+  ok.querySelector('button').onclick = () => { ok.remove(); tab = 'home'; render(); if (after) after(); };
 }
 
-/* ---------- 시연: 쇼츠 보다가 정한 시간을 넘기면 화면 전체를 가리는 알림 ---------- */
+/* ---------- 시연: 가짜 휴대폰 홈 화면 → 숏폼 앱(가상) → 화면을 가리는 알림 → 알림에서 바로 기록 ---------- */
 const hourLabel = h => h < 6 ? '새벽' : h < 12 ? '오전' : h < 18 ? '오후' : h < 22 ? '저녁' : '밤';
 const MOOD_SHORT = { '심심해서': '심심해', '피곤해서': '피곤해', '할 일 미루는 중': '미루는 중', '재밌어서': '재밌어' };
-function shortsDemo(previewNow) {
+const SVG = (d, w = 26, fill = 'none') => `<svg width="${w}" height="${w}" viewBox="0 0 24 24" fill="${fill}" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">${d}</svg>`;
+const FI = {
+  heart: '<path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/>',
+  comment: '<path d="M20 12a8 8 0 1 1-3.2-6.4L20 4l-.8 3.6A7.9 7.9 0 0 1 20 12z"/>',
+  repost: '<path d="M4 9V7a2 2 0 0 1 2-2h12l-3-3M20 15v2a2 2 0 0 1-2 2H6l3 3"/>',
+  send: '<path d="M21 3 10 14M21 3l-7 18-4-7-7-4z"/>',
+  save: '<path d="M6 3h12v18l-6-4-6 4z"/>',
+  home: '<path d="M3 11l9-7 9 7v9H3z"/>', reels: '<rect x="3" y="3" width="18" height="18" rx="4"/><path d="M10 9l5 3-5 3z"/>',
+  search: '<circle cx="11" cy="11" r="6.5"/><path d="M20 20l-4-4"/>', camera: '<path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/>',
+};
+/* 가상 영상 (실제 계정이나 영상이 아님) */
+const CLIPS = [
+  { kind: 'laptop', title: '대학원생 연구 노트 템플릿 공유', sub: '이거 쓰면 논문 정리 끝', user: 'notes_daily', cap: '노트 템플릿 하나로 학기 버티기', like: '1.5만', cm: '432', bg: 'linear-gradient(160deg,#C9CED8,#8E97A8)' },
+  { kind: 'plate', title: '자취생 10분 김치볶음밥', sub: '불 조절이 전부', user: 'cook_alone', cap: '냉장고 털이 레시피 3탄', like: '3.7만', cm: '391', bg: 'linear-gradient(160deg,#6B4A32,#2E2118)' },
+  { kind: 'ad', title: '가을 신상 최대 40%', sub: '가상 쇼핑몰', user: 'virtual_shop', cap: '이번 주만 이 가격', like: '20', cm: '2', bg: 'linear-gradient(180deg,#E9D8D2,#CDB3AB)', ad: true },
+  { kind: 'chat', title: '', user: 'daily_meme', cap: '시험 기간 단톡 국룰', like: '6.1만', cm: '1,917', bg: '#111' },
+  { kind: 'face', title: '아무도 모르는 학교 앞 맛집 3곳', sub: '마지막 집은 진짜 비밀', user: 'campus_eat', cap: '줄 서기 전에 가세요', like: '810', cm: '44', bg: 'linear-gradient(170deg,#2B2B2B,#0E0E0E)' },
+  { kind: 'post', title: '', user: 'board_pick', cap: '이거 나만 그래?', like: '7,728', cm: '116', bg: '#111' },
+  { kind: 'game', title: '이 게임 이렇게 못하는 사람 처음 봄', sub: '', user: 'game_clip', cap: '마지막 3초 보세요', like: '1.5만', cm: '90', bg: '#151515' },
+  { kind: 'dark', title: '새벽 3시에 이걸 왜 보고 있지', sub: '', user: 'midnight_log', cap: '다들 자러 가세요', like: '1.8만', cm: '136', bg: 'linear-gradient(180deg,#0B1530,#020409)' },
+  { kind: 'cat', title: '박스만 보면 들어가는 고양이', sub: '3초 만에 들어감', user: 'cat_box', cap: '오늘도 박스 승', like: '9.2만', cm: '2,301', bg: 'linear-gradient(160deg,#E8D9C0,#C2A57E)' },
+  { kind: 'gym', title: '헬스 초보 3분 루틴', sub: '이것만 해도 됨', user: 'fit_starter', cap: '저장해 두고 따라 하기', like: '4.4만', cm: '512', bg: 'linear-gradient(160deg,#3A4A5C,#141B24)' },
+];
+function clipArt(c) {
+  if (c.kind === 'laptop') return `<div class="art laptop"><div class="scr"><i></i><i></i><i></i><i></i><i style="width:40%"></i></div><div class="kb"></div></div>`;
+  if (c.kind === 'plate') return `<div class="art plate"><div class="dish"><b></b><b></b><b></b><b></b><b></b></div><div class="cup"></div></div>`;
+  if (c.kind === 'ad') return `<div class="art adcard"><p class="brand">가상 쇼핑몰</p><p class="adt">가을 신상 최대 40%</p><div class="prods"><i></i><i></i><i></i></div><div class="adbtn">지금 보러 가기 ›</div></div>`;
+  if (c.kind === 'chat') return `<div class="art chatshot"><p class="cb l">과제 다 했어?</p><p class="cb l">나 아직 시작도 안 함</p><p class="cb r">나도ㅋㅋ 쇼츠만 3시간 봄</p><p class="cb l">…우리 망했다</p><div class="cin">메시지 보내기…</div></div>`;
+  if (c.kind === 'face') return `<div class="art face"><div class="head"></div><div class="body"></div><p class="tag2">제가 한 달 전에</p></div>`;
+  if (c.kind === 'post') return `<div class="art postcard"><p class="pboard">자유게시판</p><p class="ptitle">[질문] 시험 기간에 폰 어떻게 참음?</p><p class="pmeta">조회 1,965 추천 61</p><p class="pbody">공부하려고 앉으면 쇼츠 하나만 보자 하다가 한 시간이 지나 있음. 다들 어떻게 참아요?</p><div class="pvote"><b>61</b><b>3</b></div></div>`;
+  if (c.kind === 'game') return `<div class="art gamescr"><div class="gs"><i></i><i></i><i></i><i></i><i></i><i></i></div></div>`;
+  if (c.kind === 'dark') return `<div class="art darkroom"><i></i></div>`;
+  if (c.kind === 'cat') return `<div class="art catbox"><div class="box"></div>${SVG('<path d="M5 20c0-6 3-9 7-9s7 3 7 9M7 11 6 5l4 4M17 11l1-6-4 4"/><circle cx="10" cy="14" r=".6"/><circle cx="14" cy="14" r=".6"/>', 120, '#3B2F25')}</div>`;
+  if (c.kind === 'gym') return `<div class="art gymart"><div class="bar2"></div><div class="plate2 l"></div><div class="plate2 r"></div></div>`;
+  return '';
+}
+function clipHTML(c) {
+  return `<div class="clip2" style="background:${c.bg}">${clipArt(c)}
+    ${c.title ? `<div class="ctitle"><b>${esc(c.title)}</b>${c.sub ? `<span>${esc(c.sub)}</span>` : ''}</div>` : ''}
+    <div class="cside"><button class="ca" data-like>${SVG(FI.heart, 28)}<span>${c.like}</span></button><div class="ca">${SVG(FI.comment, 27)}<span>${c.cm}</span></div><div class="ca">${SVG(FI.repost, 26)}</div><div class="ca">${SVG(FI.send, 25)}</div><div class="ca">${SVG(FI.save, 25)}</div></div>
+    <div class="cfoot"><div class="cuser"><i></i><b>${esc(c.user)}</b><span class="fol">팔로우</span></div><p>${esc(c.cap)}${c.ad ? ' <span class="adl">광고</span>' : ''}</p><p class="music">♪ 원본 오디오</p></div></div>`;
+}
+const SYSBAR = `<div class="sysbar"><button data-sys="recent" aria-label="최근 앱">|||</button><button data-sys="home" aria-label="홈">○</button><button data-sys="back" aria-label="뒤로">‹</button></div>`;
+
+/* 휴대폰 홈 화면 */
+function osHome(note) {
+  let os = $('#os'); if (os) os.remove();
+  os = document.createElement('div'); os.id = 'os'; os.className = 'os';
+  const now = new Date();
+  const apps = [['숏폼', 'linear-gradient(135deg,#F58529,#DD2A7B 55%,#8134AF)', FI.reels, 'feed'], ['언스크롤', '#2E3A8C', '<path d="M8 4h8a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2zM10.5 9.5v5M13.5 9.5v5"/>', 'app'],
+    ['메시지', '#35B04B', FI.comment, ''], ['카메라', '#4A4F5A', FI.camera, ''], ['검색', '#3A78E4', FI.search, ''], ['설정', '#6B7280', '<circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M5 19l2-2M17 7l2-2"/>', '']];
+  os.innerHTML = `<div class="os-time">${now.getHours()}:${String(now.getMinutes()).padStart(2, '0')}</div><p class="os-date">${now.getMonth() + 1}월 ${now.getDate()}일 ${'일월화수목금토'[now.getDay()]}요일</p>
+    ${S.data ? `<button class="os-widget" data-open="app"><p>${ICON.logo.replace('width="36" height="36"', 'width="14" height="14"')} 언스크롤</p><b class="num">숏폼 ${hm(today()['숏폼분'])}</b><span>멈춤 도장 이번 주 ${stampsThisWeek().length}개${S.plan ? ', 오늘 계획 잊지 않기' : ''}</span></button>` : ''}
+    <div class="os-grid">${apps.map(([n, bg, ic, act]) => `<button class="os-app" data-open="${act}"><i style="background:${bg}">${SVG(ic, 30)}</i><span>${n}</span></button>`).join('')}</div>
+    <p class="os-hint">시연용 휴대폰 화면이에요. '숏폼'을 눌러 보세요</p>${SYSBAR}`;
+  $('#phone').appendChild(os);
+  os.querySelectorAll('[data-open]').forEach(b => b.onclick = () => { if (b.dataset.open === 'feed') openFeed(); else if (b.dataset.open === 'app') { os.remove(); render(); } else toast('시연에서는 숏폼과 언스크롤만 열려요'); });
+  os.querySelectorAll('[data-sys]').forEach(b => b.onclick = () => {});
+  if (note) setTimeout(() => quickNote(note), 600);
+}
+/* 방금 본 숏폼을 알림에서 바로 기록 (안드로이드 알림 버튼으로 만들 수 있는 방식) */
+function quickNote(sess) {
+  const os = $('#os'); if (!os) return;
+  const n = document.createElement('div'); n.className = 'qnote';
+  n.innerHTML = `<div class="who"><i>${ICON.logo.replace('width="36" height="36"', 'width="14" height="14"')}</i>언스크롤<span style="margin-left:auto">지금</span></div>
+    <p class="qn-t">방금 ${esc(sess['앱'])} ${sess['분']}분, 어땠어요?</p>
+    <div class="qn-b">${[['만족', '좋았어요'], ['보통', '그냥'], ['후회', '아쉬워요']].map(([v, t]) => `<button data-q="${v}">${t}</button>`).join('')}</div>
+    <div class="qn-r" hidden>${QUICK.map(q => `<button data-qr="${q}">${q}</button>`).join('')}</div>`;
+  os.appendChild(n);
+  const done = msg => { n.innerHTML = `<div class="who"><i>${ICON.logo.replace('width="36" height="36"', 'width="14" height="14"')}</i>언스크롤</div><p class="qn-t">${msg}</p>`; setTimeout(() => n.classList.add('bye'), 1800); setTimeout(() => n.remove(), 2300); };
+  n.querySelectorAll('[data-q]').forEach(b => b.onclick = () => {
+    sess['평가'] = b.dataset.q; save();
+    if (b.dataset.q === '후회') { n.querySelector('.qn-b').hidden = true; n.querySelector('.qn-r').hidden = false; n.querySelector('.qn-t').textContent = '무엇 때문이었어요?'; }
+    else done('기록했어요. 오늘 돌아보기에 들어갔어요');
+  });
+  n.querySelectorAll('[data-qr]').forEach(b => b.onclick = () => { sess['이유'] = b.dataset.qr; save(); done(`"${b.dataset.qr}" 기록했어요. 일요일에 AI와 같이 볼게요`); });
+}
+/* 숏폼 앱(가상) */
+function openFeed(previewNow) {
+  const os = $('#os'); if (os) os.remove();
   let min = previewNow ? S.notif.shortLimit : 0, limit = S.notif.shortLimit, idx = 0, paused = false;
-  const clips = [['#3B4A6B'], ['#6B4A3B'], ['#2F5E55'], ['#5A3B6B'], ['#35512F'], ['#6B5A3B']];
-  const el = document.createElement('div'); el.className = 'shorts'; el.id = 'shorts';
-  el.innerHTML = `<div class="shorts-top"><b>쇼츠</b><span class="pill num" id="sclock">${min}분째</span><button class="close dark" id="sClose" aria-label="닫기">✕</button></div>
-    <div class="shorts-feed" id="sfeed">${[...clips, ...clips, ...clips].map(([c]) => `<div class="clip" style="background:${c}"><i></i></div>`).join('')}</div>
-    <p class="shorts-hint">시연이라 1초가 1분으로 흘러가요</p>`;
-  $('#phone').appendChild(el);
-  const feed = $('#sfeed');
+  const order = [...CLIPS].sort(() => Math.random() - .5);
+  const el = document.createElement('div'); el.className = 'feed'; el.id = 'shorts';
+  el.innerHTML = `<div class="ftop"><b>숏폼</b><span class="ftab on">추천</span><span class="ftab">친구</span><span class="fclock num" id="sclock">${min}분째</span></div>
+    <div class="fwin"><div class="ftrack" id="sfeed">${[...order, ...order, ...order].map(clipHTML).join('')}</div><div class="fprog"><i id="fprog"></i></div></div>
+    <div class="fnav">${[FI.home, FI.reels, FI.send, FI.search].map((d, i) => `<span class="${i === 1 ? 'on' : ''}">${SVG(d, 25)}</span>`).join('')}<span class="me"></span></div>${SYSBAR}
+    <p class="fhint">시연: 1초가 1분, 정한 ${limit}분이 되면 알림이 떠요. 그 전에 ○를 누르면 스스로 멈춘 거예요</p>`;
+  $('#phone').appendChild(el); setTimeout(() => { const h = el.querySelector('.fhint'); if (h) h.classList.add('gone'); }, 5000);
+  const feed = $('#sfeed'), N = order.length * 3;
+  const go = () => { idx = (idx + 1) % N; feed.style.transform = `translateY(-${idx * 100}%)`; };
+  el.querySelectorAll('[data-like]').forEach(b => b.onclick = () => b.classList.toggle('on'));
+  let sy = null; el.querySelector('.fwin').addEventListener('touchstart', e => { sy = e.touches[0].clientY; }, { passive: true });
+  el.querySelector('.fwin').addEventListener('touchend', e => { if (sy != null && sy - e.changedTouches[0].clientY > 40) go(); sy = null; });
+  el.querySelector('.fwin').addEventListener('wheel', e => { if (e.deltaY > 20) go(); }, { passive: true });
   const close = () => { clearInterval(timer); el.remove(); };
-  $('#sClose').onclick = () => { const early = !previewNow && !paused && min >= 3 && min < limit; close(); render(); if (early) giveStamp('early', min); };
+  const sess = () => { const t = today(), d = new Date(), h = d.getHours(), mm = d.getMinutes();
+    const s = { id: Math.max(0, ...weekSessions().map(x => x.id)) + 1, 앱: '인스타그램 릴스', 시: h, 분시각: mm, 시작: `${String(h).padStart(2, '0')}:${String(mm).padStart(2, '0')}`, 분: min, 시간대: hourLabel(h), 평가: '', 이유: '' };
+    t['세션'].push(s); t['숏폼분'] += min; t['총분'] += min; save(); return s; };
+  el.querySelectorAll('[data-sys]').forEach(b => b.onclick = () => {
+    if (paused) return;
+    const early = !previewNow && min >= 3 && min < limit;
+    close();
+    if (min >= 10) { const s = sess(); if (early) giveStamp('early', min, () => osHome(s)); else osHome(s); }
+    else if (early) giveStamp('early', min, () => osHome());
+    else osHome();
+  });
+  let tick = 0;
   const timer = setInterval(() => {
     if (paused) return;
-    min++; $('#sclock').textContent = `${min}분째`;
-    if (min % 2 === 0) { idx = (idx + 1) % 18; feed.style.transform = `translateY(-${idx * 100}%)`; }
+    tick++; $('#fprog').style.width = `${(tick % 4) * 33.4}%`;
+    if (tick % 2 === 0) { min++; $('#sclock').textContent = `${min}분째`; }
+    if (tick % 4 === 0) go();
     if (S.notif.short && min >= limit) cover();
-  }, 1000);
+  }, 500);
   if (previewNow) setTimeout(cover, 300);
   function cover() {
     paused = true;
@@ -1663,15 +1925,43 @@ function shortsDemo(previewNow) {
       const m = c.querySelector('#cMsg'); m.hidden = false; m.textContent = (S.nudges && S.nudges[b.dataset.state]) || MOCK.nudge[b.dataset.state][0];
     });
     c.querySelector('#cMore').onclick = () => { c.remove(); limit = min + 5; paused = false; };
-    c.querySelector('#cStop').onclick = () => {
-      close();
-      const t = today(), d = new Date(), h = d.getHours(), mm = d.getMinutes();
-      t['세션'].push({ id: Math.max(0, ...weekSessions().map(x => x.id)) + 1, 앱: '유튜브 쇼츠', 시: h, 분시각: mm, 시작: `${String(h).padStart(2, '0')}:${String(mm).padStart(2, '0')}`, 분: min, 시간대: hourLabel(h), 평가: '', 이유: '' });
-      t['숏폼분'] += min; t['총분'] += min;
-      save(); giveStamp('alarm', min);
-    };
+    c.querySelector('#cStop').onclick = () => { close(); const s = sess(); giveStamp('alarm', min, () => osHome(s)); };
   }
 }
+const shortsDemo = previewNow => openFeed(previewNow);
+
+/* 시연 순서: 발표 중에 원하는 장면으로 바로 이동 */
+async function demoReady() {
+  if (S.step >= 5 && S.data) return;
+  S = { ...fresh(), step: 5, name: '지민', persona: CFG.personas[0] || '과제가 막히면 폰을 여는 학생' };
+  S.data = await api(`/api/screentime?persona=${encodeURIComponent(S.persona)}&seed=${S.seed}`); seedStamps(); save();
+}
+const SCENES = [
+  ['휴대폰에서 숏폼 보다가 알림', async () => { await demoReady(); clearLayers(); render(); osHome(); }],
+  ['방금 본 것 알림으로 기록', async () => { await demoReady(); clearLayers(); render(); const t = today(), s = t['세션'].find(x => SHORT.includes(x['앱']) && !x['평가']) || t['세션'][0]; osHome(s); }],
+  ['이번 주 AI 돌아보기와 계획', async () => { await demoReady(); clearLayers(); tab = 'home'; render(); openReflect(); }],
+  ['내 기록에게 묻기', async () => { await demoReady(); clearLayers(); tab = 'home'; render(); openAsk(); }],
+  ['친구 소식과 응원', async () => { await demoReady(); clearLayers(); tab = 'friends'; render(); }],
+  ['일주일 뒤 계획 점검', async () => { await demoReady(); clearLayers(); if (!S.plan) { S.trigger = '과제·공부 피하기'; S.plan = `만약 ${IF_PART[S.trigger]}, 폰을 손 안 닿는 곳에 두고 25분만 해 본다`; S.planHistory = [{ '계획': S.plan, '계기': S.trigger, '날짜': today()['날짜'] }]; S.nudges = null; } await nextWeek(); openReflect(); }],
+];
+function clearLayers() { ['#os', '#shorts', '#ov', '#shareBg'].forEach(q => { const e = $(q); if (e) e.remove(); }); document.querySelectorAll('.celebrate').forEach(e => e.remove()); }
+function demoPanelHTML() {
+  return `<p class="dp-t">시연 순서</p>${SCENES.map(([t], i) => `<button class="dp-b" data-scene="${i}"><b>${i + 1}</b>${t}</button>`).join('')}
+    <button class="dp-reset" data-scene="reset">처음부터 (시작 화면)</button>`;
+}
+function bindDemoPanel(root) {
+  root.querySelectorAll('[data-scene]').forEach(b => b.onclick = async () => {
+    const sh = $('#demoSheet'); if (sh) sh.remove();
+    if (b.dataset.scene === 'reset') { clearLayers(); S = fresh(); if (CFG.personas[0]) S.persona = CFG.personas[0]; save(); tab = 'home'; render(); return; }
+    await SCENES[+b.dataset.scene][1]();
+  });
+}
+function openDemoSheet() {
+  const bg = document.createElement('div'); bg.className = 'sheet-bg'; bg.id = 'demoSheet';
+  bg.innerHTML = `<div class="sheet demo-sheet">${demoPanelHTML()}<button class="btn line" style="margin-top:10px" id="dsClose">닫기</button></div>`;
+  $('#phone').appendChild(bg); bindDemoPanel(bg); $('#dsClose').onclick = () => bg.remove();
+}
+
 
 /* ---------- 서버 없이 돌아가는 모의 처리 (sim.py, core.py의 모의 AI를 그대로 옮김) ---------- */
 const LOCAL = (() => {
@@ -1760,6 +2050,8 @@ const LOCAL = (() => {
   if (S.data && !S.stamps) seedStamps();
   if (S.step >= 5 && !S.data) S.step = 2;
   render();
+  const dp = $('#demoPanel'); dp.insertAdjacentHTML('beforeend', demoPanelHTML()); bindDemoPanel(dp);
+  $('#demoFab').onclick = openDemoSheet;
 })();
 </script>
 </body>
