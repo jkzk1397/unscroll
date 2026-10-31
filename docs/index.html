@@ -872,8 +872,9 @@ const REPLY = {
   '준호': ['ㅋㅋ 고마워 나 요즘 알림 꺼 둠', '응원 고마워! 나도 도장 하나 받아 볼게'],
   '하은': ['고마워ㅠ 과제 끝나면 같이 밥 먹자', '오 덕분에 힘 난다. 너도 계획 화이팅'],
 };
+const hasBatchim = w => { const c = (w || '').charCodeAt(w.length - 1) - 0xAC00; return c >= 0 && c <= 11171 && c % 28 !== 0; };
 const MOCK_CHEER = {
-  '잠이 안 옴': n => `${n}아, 요즘 밤에 잘 끊고 있다며! 오늘도 일찍 눕자`,
+  '잠이 안 옴': n => `${n}${hasBatchim(n) ? '아' : '야'}, 요즘 밤에 잘 끊고 있다며! 오늘도 일찍 눕자`,
   '연락·알림': n => `${n}, 알림 줄이는 거 쉽지 않은데 잘하고 있어!`,
   '과제·공부 피하기': n => `${n}, 과제하면서 계획 지키는 거 멋있다. 오늘도 화이팅`,
 };
@@ -1556,7 +1557,7 @@ function mockGoal(text) {
   else if (app) g = { '지표': 'app', '앱': app, '기준': n ?? Math.round(measure('app', app) * .7) };
   else g = { '지표': 'avg', '기준': n ?? Math.round(measure('avg') * .8) };
   const t1 = text.replace(/\s+/g, ' ').trim(); g['목표'] = t1.length <= 25 ? t1 : t1.slice(0, 25).replace(/\s+\S*$/, '');
-  g['편지'] = `다음 주의 나에게. 이번 주에는 숏폼이 ${peakWindow() || '여러 시간대'}에 길어졌어. 그래서 '${g['목표']}'를 해 보기로 했어. 잘 안 돼도 괜찮아, 일주일 뒤에 같이 보자.`;
+  g['편지'] = `다음 주의 나에게. 이번 주에는 숏폼이 ${peakWindow() || '여러 시간대'}에 길어졌어. 그래서 '${g['목표']}' 목표를 세웠어. 잘 안 돼도 괜찮아, 일주일 뒤에 같이 보자.`;
   return g;
 }
 async function makeGoal(text) {
